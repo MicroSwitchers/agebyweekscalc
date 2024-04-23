@@ -1,156 +1,164 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Early Childhood Age Calculator</title>
-
+<title>Age Category Calculator</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
         padding: 20px;
-        background-color: #f4f4f4;
-        color: #333;
+        background-color: #455b57;
+        color: #ffffff;
     }
     .container {
-        max-width: 400px;
-        margin: auto;
-        background-color: white;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
+        max-width: 200px;
+        margin: 20px auto;
+        background-color: #eeebe5;
+        padding: 25px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        color: #333;
     }
     input, button {
         width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        padding: 12px;
+        margin: 8px 0;
+        border: 2px solid #cac7bf;
+        border-radius: 5px;
         box-sizing: border-box;
+        transition: border-color 0.3s;
+    }
+    input:focus, button:focus {
+        border-color: #27875f;
+        outline: none;
     }
     button {
-        background-color: #007bff;
+        background-color: #27875f;
         color: white;
         border: none;
         cursor: pointer;
+        transition: background-color 0.3s;
     }
     button:hover {
-        background-color: #0056b3;
+        background-color: #125551;
     }
-    .result {
+    .result, .category {
         margin-top: 20px;
-        font-size: 20px;
-        color: #007bff;
+        padding: 10px;
+        background-color: #d5cdbf;
+        border-radius: 5px;
+        color: #333;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
     }
     .format-label {
-        color: #666;
-        font-size: 12px;
+        color: #dddddd;
+        font-size: 17px;
+        margin-bottom: 5px;
     }
 </style>
-
 </head>
 <body>
 <div class="container">
-    <h2>Enhanced Age Calculator</h2>
-    <input type="date" id="birthdayCalendar" max="2023-11-26">
-    <div class="format-label">Format: Calendar</div>
-    <input type="text" id="birthdayDDMMYY" placeholder="DDMMYY">
-    <div class="format-label">Format: DDMMYY</div>
-    <input type="text" id="birthdayMonthDDYY" placeholder="Month DD, YY">
-    <div class="format-label">Format: Month DD, YY</div>
+    <h2>Age Category Calculator</h2>
+    <input type="number" id="yearInput" placeholder="YYYY (Year)" min="1900" max="2100">
+    <input list="months" id="monthInput" placeholder="number or text (Month)" onchange="validateMonthInput()">
+    <datalist id="months">
+        <!-- Month options... -->
+    </datalist>
+    <input type="number" id="dayInput" placeholder="DD (Day)" min="1" max="31">
     <button onclick="calculateAdvancedAge()">Calculate Age</button>
     <button onclick="clearAll()">All Clear</button>
     <div class="result" id="result"></div>
+    <div class="category" id="category"></div>
 </div>
 
 <script>
-function calculateAgeFromDate(date) {
-    var today = new Date();
-    if (date > today || isNaN(date)) {
-        document.getElementById('result').innerText = 'Please enter a valid birthday';
-        return;
+document.getElementById('yearInput').addEventListener('input', function() {
+    if (this.value.length === 4) {
+        document.getElementById('monthInput').focus();
     }
+});
 
-    var ageYears = today.getFullYear() - date.getFullYear();
-    var m = today.getMonth() - date.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
-        ageYears--;
+const monthNames = {
+    "01": "January", "1": "January", "january": "January", "jan": "January",
+    "02": "February", "2": "February", "february": "February", "feb": "February",
+    "03": "March", "3": "March", "march": "March", "mar": "March",
+    "04": "April", "4": "April", "april": "April", "apr": "April",
+    "05": "May", "5": "May", "may": "May",
+    "06": "June", "6": "June", "june": "June", "jun": "June",
+    "07": "July", "7": "July", "july": "July", "jul": "July",
+    "08": "August", "8": "August", "august": "August", "aug": "August",
+    "09": "September", "9": "September", "september": "September", "sep": "September",
+    "10": "October", "october": "October", "oct": "October",
+    "11": "November", "november": "November", "nov": "November",
+    "12": "December", "december": "December", "dec": "December"
+};
+
+function validateMonthInput() {
+    let input = document.getElementById('monthInput').value.toLowerCase().trim();
+    let numericMatch = input.match(/^\d+$/);
+    let monthNumber = numericMatch ? numericMatch[0].padStart(2, '0') : null;
+    let monthName = monthNames[monthNumber];
+
+    if (monthName) {
+        document.getElementById('monthInput').value = `${monthName} (${monthNumber})`;
+    } else {
+        for (let key in monthNames) {
+            if (monthNames[key].toLowerCase().includes(input)) {
+                document.getElementById('monthInput').value = `${monthNames[key]} (${key})`;
+                break;
+            }
+        }
     }
-
-    var ageMonths = today.getMonth() - date.getMonth() + (12 * (today.getFullYear() - date.getFullYear()));
-    if (today.getDate() < date.getDate()) {
-        ageMonths--;
-    }
-
-    document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + ageMonths % 12 + ' months';
+    document.getElementById('dayInput').focus();
 }
 
 function calculateAdvancedAge() {
-    var birthdayInputCalendar = document.getElementById('birthdayCalendar').value;
-    var birthdayInputDDMMYY = document.getElementById('birthdayDDMMYY').value;
-    var birthdayInputMonthDDYY = document.getElementById('birthdayMonthDDYY').value;
-
-    var inputsFilled = [birthdayInputCalendar, birthdayInputDDMMYY, birthdayInputMonthDDYY].filter(Boolean).length;
-    if (inputsFilled !== 1) {
-        document.getElementById('result').innerText = 'Please provide only one date input.';
-        return;
-    }
-
-    var birthday;
-    if (birthdayInputCalendar) {
-        birthday = new Date(birthdayInputCalendar);
-    } else if (birthdayInputDDMMYY) {
-        birthday = parseDDMMYY(birthdayInputDDMMYY);
-        if (!birthday) {
-            document.getElementById('result').innerText = 'Invalid DDMMYY format or date.';
-            return;
-        }
-    } else {
-        birthday = new Date(birthdayInputMonthDDYY);
-    }
-
+    var year = document.getElementById('yearInput').value;
+    var monthValue = document.getElementById('monthInput').value;
+    var monthMatch = monthValue.match(/\((\d{2})\)/);
+    var month = monthMatch ? monthMatch[1] : ''; // Extract the month number
+    var day = document.getElementById('dayInput').value;
+    var birthday = new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
     var today = new Date();
     if (birthday > today || isNaN(birthday)) {
-        document.getElementById('result').innerText = 'Please enter a valid birthday';
+        document.getElementById('result').innerText = 'Please enter a birthday';
         return;
     }
 
-    var ageYears = today.getFullYear() - birthday.getFullYear();
-    var m = today.getMonth() - birthday.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
-        ageYears--;
-    }
+    var ageMonths = calculateAgeInMonths(birthday, today);
+    var ageYears = Math.floor(ageMonths / 12);
+    var remainingMonths = ageMonths % 12;
+    document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + remainingMonths + ' months (' + ageMonths + ' months)';
+    determineCategory(ageMonths);
+}
 
-    var ageMonths = today.getMonth() - birthday.getMonth() + (12 * (today.getFullYear() - birthday.getFullYear()));
-    if (today.getDate() < birthday.getDate()) {
-        ageMonths--;
-    }
+function calculateAgeInMonths(birthday, today) {
+    var months = (today.getFullYear() - birthday.getFullYear()) * 12;
+    months -= birthday.getMonth();
+    months += today.getMonth();
+    return today.getDate() < birthday.getDate() ? months - 1 : months;
+}
 
-    document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + ageMonths % 12 + ' months (' + ageMonths + ' months total)';
+function determineCategory(months) {
+    let category;
+    if (months <= 17) category = 'Infant';
+    else if (months <= 30) category = 'Toddler';
+    else if (months <= 43) category = 'Preschool';
+    else if (months <= 55) category = 'JK';
+    else if (months <= 71) category = 'SK';
+    else category = 'Aged Out (Over 6)';
+    document.getElementById('category').innerText = 'Age Category: ' + category;
 }
 
 function clearAll() {
-    document.getElementById('birthdayCalendar').value = '';
-    document.getElementById('birthdayDDMMYY').value = '';
-    document.getElementById('birthdayMonthDDYY').value = '';
+    document.getElementById('yearInput').value = '';
+    document.getElementById('monthInput').value = '';
+    document.getElementById('dayInput').value = '';
     document.getElementById('result').innerText = '';
-}
-
-function parseDDMMYY(dateStr) {
-    if (dateStr.length !== 6 || isNaN(dateStr)) {
-        return null; // Invalid format
-    }
-    var day = parseInt(dateStr.substring(0, 2), 10);
-    var month = parseInt(dateStr.substring(2, 4), 10) - 1; // Months are 0-indexed in JavaScript
-    var year = parseInt(dateStr.substring(4, 6), 10);
-    // Adjust year for 20th and 21st century
-    year += year < 50 ? 2000 : 1900;
-
-    var date = new Date(year, month, day);
-    if (isNaN(date.getTime())) return null;
-    return date;
+    document.getElementById('category').innerText = '';
 }
 </script>
 </body>
