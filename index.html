@@ -9,28 +9,28 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
         padding: 20px;
-        background-color: #455b57;
+        background-color: #224f8a;
         color: #ffffff;
     }
     .container {
         max-width: 200px;
         margin: 20px auto;
-        background-color: #eeebe5;
+        background-color: #f2f2f2;
         padding: 25px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
         color: #333;
     }
-    input, button {
+    input, select, button {
         width: 100%;
         padding: 12px;
         margin: 8px 0;
-        border: 2px solid #cac7bf;
+        border: 2px solid #ccc;
         border-radius: 5px;
         box-sizing: border-box;
         transition: border-color 0.3s;
     }
-    input:focus, button:focus {
+    input:focus, button:focus, select:focus {
         border-color: #27875f;
         outline: none;
     }
@@ -47,14 +47,14 @@
     .result, .category {
         margin-top: 20px;
         padding: 10px;
-        background-color: #d5cdbf;
+        background-color: #ffffff;
         border-radius: 5px;
         color: #333;
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        box-shadow: inset 0 0 5px rgba(133, 133, 133, 0.05);
     }
     .format-label {
         color: #dddddd;
-        font-size: 17px;
+        font-size: 14px;
         margin-bottom: 5px;
     }
 </style>
@@ -63,11 +63,22 @@
 <div class="container">
     <h2>Age Category Calculator</h2>
     <input type="number" id="yearInput" placeholder="YYYY (Year)" min="1900" max="2100">
-    <input list="months" id="monthInput" placeholder="number or text (Month)" onchange="validateMonthInput()">
+    <input list="months" id="monthInput" placeholder="## or MMM (Month)" onchange="validateMonthInput()">
     <datalist id="months">
-        <!-- Month options... -->
+        <option value="01 - Jan">
+        <option value="02 - Feb">
+        <option value="03 - Mar">
+        <option value="04 - Apr">
+        <option value="05 - May">
+        <option value="06 - Jun">
+        <option value="07 - Jul">
+        <option value="08 - Aug">
+        <option value="09 - Sep">
+        <option value="10 - Oct">
+        <option value="11 - Nov">
+        <option value="12 - Dec">
     </datalist>
-    <input type="number" id="dayInput" placeholder="DD (Day)" min="1" max="31">
+    <input type="text" id="dayInput" placeholder="DD (Day)" maxlength="2" onchange="validateDayInput()">
     <button onclick="calculateAdvancedAge()">Calculate Age</button>
     <button onclick="clearAll()">All Clear</button>
     <div class="result" id="result"></div>
@@ -75,62 +86,66 @@
 </div>
 
 <script>
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 document.getElementById('yearInput').addEventListener('input', function() {
     if (this.value.length === 4) {
         document.getElementById('monthInput').focus();
     }
 });
 
-const monthNames = {
-    "01": "January", "1": "January", "january": "January", "jan": "January",
-    "02": "February", "2": "February", "february": "February", "feb": "February",
-    "03": "March", "3": "March", "march": "March", "mar": "March",
-    "04": "April", "4": "April", "april": "April", "apr": "April",
-    "05": "May", "5": "May", "may": "May",
-    "06": "June", "6": "June", "june": "June", "jun": "June",
-    "07": "July", "7": "July", "july": "July", "jul": "July",
-    "08": "August", "8": "August", "august": "August", "aug": "August",
-    "09": "September", "9": "September", "september": "September", "sep": "September",
-    "10": "October", "october": "October", "oct": "October",
-    "11": "November", "november": "November", "nov": "November",
-    "12": "December", "december": "December", "dec": "December"
-};
-
 function validateMonthInput() {
-    let input = document.getElementById('monthInput').value.toLowerCase().trim();
-    let numericMatch = input.match(/^\d+$/);
-    let monthNumber = numericMatch ? numericMatch[0].padStart(2, '0') : null;
-    let monthName = monthNames[monthNumber];
-
-    if (monthName) {
-        document.getElementById('monthInput').value = `${monthName} (${monthNumber})`;
+    let input = document.getElementById('monthInput').value.toLowerCase();
+    let monthNumber = input.match(/^(\d{1,2})/); // Matches one or two digits
+    if (monthNumber) {
+        let monthIndex = parseInt(monthNumber[1], 10) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            document.getElementById('monthInput').value = monthNumber[1].padStart(2, '0') + ' - ' + monthNames[monthIndex]; // Sets input to "## - MMM" format
+        }
     } else {
-        for (let key in monthNames) {
-            if (monthNames[key].toLowerCase().includes(input)) {
-                document.getElementById('monthInput').value = `${monthNames[key]} (${key})`;
-                break;
-            }
+        // Check if the input is an abbreviated month name
+        let monthName = getMonthName(input.slice(0, 3));
+        if (monthName) {
+            document.getElementById('monthInput').value = getMonthNumber(monthName) + ' - ' + monthName; // Sets input to "## - MMM" format
         }
     }
     document.getElementById('dayInput').focus();
 }
 
+function validateDayInput() {
+    let input = document.getElementById('dayInput').value;
+    if (input.length === 1) {
+        document.getElementById('dayInput').value = '0' + input; // Add leading zero for single-digit input
+    }
+}
+
+function getMonthName(input) {
+    const monthNamesLower = monthNames.map(name => name.toLowerCase());
+    const index = monthNamesLower.indexOf(input);
+    return index !== -1 ? monthNames[index] : null;
+}
+
+function getMonthNumber(monthName) {
+    const index = monthNames.indexOf(monthName);
+    return (index + 1).toString().padStart(2, '0');
+}
+
 function calculateAdvancedAge() {
     var year = document.getElementById('yearInput').value;
-    var monthValue = document.getElementById('monthInput').value;
-    var monthMatch = monthValue.match(/\((\d{2})\)/);
-    var month = monthMatch ? monthMatch[1] : ''; // Extract the month number
+    var monthInput = document.getElementById('monthInput').value.split(' - ');
+    var month = parseInt(monthInput[0], 10) - 1; // Months are 0-indexed in JavaScript
     var day = document.getElementById('dayInput').value;
-    var birthday = new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
+    var birthday = new Date(year, month, day);
     var today = new Date();
     if (birthday > today || isNaN(birthday)) {
-        document.getElementById('result').innerText = 'Please enter a birthday';
+        document.getElementById('result').innerText = 'Please enter a valid birthday';
         return;
     }
 
     var ageMonths = calculateAgeInMonths(birthday, today);
     var ageYears = Math.floor(ageMonths / 12);
     var remainingMonths = ageMonths % 12;
+
     document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + remainingMonths + ' months (' + ageMonths + ' months)';
     determineCategory(ageMonths);
 }
@@ -139,7 +154,10 @@ function calculateAgeInMonths(birthday, today) {
     var months = (today.getFullYear() - birthday.getFullYear()) * 12;
     months -= birthday.getMonth();
     months += today.getMonth();
-    return today.getDate() < birthday.getDate() ? months - 1 : months;
+    if (today.getDate() < birthday.getDate()) {
+        months--;
+    }
+    return months;
 }
 
 function determineCategory(months) {
@@ -150,6 +168,7 @@ function determineCategory(months) {
     else if (months <= 55) category = 'JK';
     else if (months <= 71) category = 'SK';
     else category = 'Aged Out (Over 6)';
+
     document.getElementById('category').innerText = 'Age Category: ' + category;
 }
 
