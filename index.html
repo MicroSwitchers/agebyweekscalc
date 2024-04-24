@@ -63,7 +63,7 @@
 <div class="container">
     <h2>Age Category Calculator</h2>
     <input type="number" id="yearInput" placeholder="YYYY (Year)" min="1900" max="2100">
-    <input list="months" id="monthInput" placeholder="## or MMM (Month)" onchange="validateMonthInput()">
+    <input list="months" id="monthInput" placeholder="# or MMM (Month)" onchange="validateMonthInput()">
     <datalist id="months">
         <option value="01 - Jan">
         <option value="02 - Feb">
@@ -146,7 +146,7 @@ function calculateAdvancedAge() {
     var ageYears = Math.floor(ageMonths / 12);
     var remainingMonths = ageMonths % 12;
 
-    document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + remainingMonths + ' months (' + ageMonths + ' months)';
+    document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + remainingMonths + ' month(s) (' + ageMonths + ' months)';
     determineCategory(ageMonths);
 }
 
