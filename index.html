@@ -1,184 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Age Category Calculator</title>
-<style>
+  <title>Calculation Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A calculation checker for Dr. Roman-Lantzy's CVI Range Rating II assessment method.">
+  <style>
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        text-align: center;
-        padding: 20px;
-        background-color: #224f8a;
-        color: #ffffff;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #c8d4d8;
     }
-    .container {
-        max-width: 200px;
-        margin: 20px auto;
-        background-color: #f2f2f2;
-        padding: 25px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        color: #333;
+
+    h1 {
+      color: #333;
+      font-size: 20px;
     }
-    input, select, button {
-        width: 100%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 2px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-        transition: border-color 0.3s;
+
+    h2 {
+      color: #474747;
+      font-size: 16px;
     }
-    input:focus, button:focus, select:focus {
-        border-color: #27875f;
-        outline: none;
+
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-    button {
-        background-color: #27875f;
-        color: white;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
+
+    .button-grid button {
+      border: none;
+      border-radius: 4px;
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      font-size: 16px;
+      color: #333;
+      transition: background-color 0.3s ease;
     }
-    button:hover {
-        background-color: #125551;
+
+    .button-grid button:hover {
+      background-color: #f0f0f0;
     }
-    .result, .category {
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #ffffff;
-        border-radius: 5px;
-        color: #333;
-        box-shadow: inset 0 0 5px rgba(133, 133, 133, 0.05);
+
+    .button-grid button.active {
+      background-color: #3072b9;
+      color: #fff;
     }
-    .format-label {
-        color: #dddddd;
-        font-size: 14px;
-        margin-bottom: 5px;
+
+    .title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      text-align: center;
+      width: 100%;
+      font-size: 18px;
+      color: #333;
     }
-</style>
+
+    .total-display {
+      background-color: #385d84;
+      color: #fff;
+      padding: 10px;
+      margin-top: 20px;
+      font-size: 24px;
+    }
+
+    .datawarning {
+      color: #2e2e2e;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .credits {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #676767;
+    }
+
+    .all-clear-button {
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      background-color: #ff5252;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .all-clear-button:hover {
+      background-color: #ff1744;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h2>Age Category Calculator</h2>
-    <input type="number" id="yearInput" placeholder="YYYY (Year)" min="1900" max="2100">
-    <input list="months" id="monthInput" placeholder="# or MMM (Month)" onchange="validateMonthInput()">
-    <datalist id="months">
-        <option value="01 - Jan">
-        <option value="02 - Feb">
-        <option value="03 - Mar">
-        <option value="04 - Apr">
-        <option value="05 - May">
-        <option value="06 - Jun">
-        <option value="07 - Jul">
-        <option value="08 - Aug">
-        <option value="09 - Sep">
-        <option value="10 - Oct">
-        <option value="11 - Nov">
-        <option value="12 - Dec">
-    </datalist>
-    <input type="text" id="dayInput" placeholder="DD (Day)" maxlength="2" onchange="validateDayInput()">
-    <button onclick="calculateAdvancedAge()">Calculate Age</button>
-    <button onclick="clearAll()">All Clear</button>
-    <div class="result" id="result"></div>
-    <div class="category" id="category"></div>
-</div>
+  <h1>Calculation Checker Tool</h1>
+  <h2>For adding up Dr. Roman Lantzy's CVI Range Rating II - (Within-CVI Characteristics Assessment Method)</h2>
 
-<script>
-const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  <div class="button-grid" id="buttonGrid"></div>
+  <div class="total-display" id="totalDisplay">Total: 0</div>
 
-document.getElementById('yearInput').addEventListener('input', function() {
-    if (this.value.length === 4) {
-        document.getElementById('monthInput').focus();
-    }
-});
+  <button class="all-clear-button" id="allClearButton">All Clear</button>
 
-function validateMonthInput() {
-    let input = document.getElementById('monthInput').value.toLowerCase();
-    let monthNumber = input.match(/^(\d{1,2})/); // Matches one or two digits
-    if (monthNumber) {
-        let monthIndex = parseInt(monthNumber[1], 10) - 1;
-        if (monthIndex >= 0 && monthIndex < 12) {
-            document.getElementById('monthInput').value = monthNumber[1].padStart(2, '0') + ' - ' + monthNames[monthIndex]; // Sets input to "## - MMM" format
+  <div class="datawarning">
+    No data is collected or saved. Please record the results on a CVI Range Assessment form before closing.
+  </div>
+
+  <div class="credits">
+    <p>Source: The CVI Range Rating II assessment method and calculation process are the work of Dr. Christine Roman-Lantzy, as detailed in her book:</p>
+    <p>Roman-Lantzy, C. (2018). Cortical Visual Impairment: An Approach to Assessment and Intervention (2nd ed.). American Printing House for the Blind.</p>
+    <p>This calculator was created by Niall Brown, Early Childhood Vision Consultant, to assist with double-checking assessment totals.</p>
+  </div>
+
+  <script>
+    function createButtonGrid() {
+      const numRows = 10;
+      const numCols = 5;
+      const values = [0, 0.25, 0.5, 0.75, 1];
+      const titles = [
+        "1. Color Preference",
+        "2. Need for Movement", 
+        "3. Visual Latency",
+        "4. Visual Field Preferences",
+        "5. Difficulty With Visual Complexity",
+        "6. Need for Light",
+        "7. Difficulty with Distance Viewing",
+        "8. Atypical Visual Reflexes",
+        "9. Difficulty With Visual Novelty",
+        "10. Absence of Visually Guided Reach"
+      ];
+      const grid = document.getElementById('buttonGrid');
+
+      for (let row = 0; row < numRows; row++) {
+        let title = document.createElement('div');
+        title.classList.add('title');
+        title.textContent = titles[row];
+        grid.appendChild(title);
+
+        for (let col = 0; col < numCols; col++) {
+          let button = document.createElement('button');
+          button.textContent = values[col].toString();
+          button.dataset.value = values[col];
+          button.dataset.row = row;
+          button.onclick = () => handleButtonClick(button, row);
+          grid.appendChild(button);
         }
-    } else {
-        // Check if the input is an abbreviated month name
-        let monthName = getMonthName(input.slice(0, 3));
-        if (monthName) {
-            document.getElementById('monthInput').value = getMonthNumber(monthName) + ' - ' + monthName; // Sets input to "## - MMM" format
-        }
-    }
-    document.getElementById('dayInput').focus();
-}
-
-function validateDayInput() {
-    let input = document.getElementById('dayInput').value;
-    if (input.length === 1) {
-        document.getElementById('dayInput').value = '0' + input; // Add leading zero for single-digit input
-    }
-}
-
-function getMonthName(input) {
-    const monthNamesLower = monthNames.map(name => name.toLowerCase());
-    const index = monthNamesLower.indexOf(input);
-    return index !== -1 ? monthNames[index] : null;
-}
-
-function getMonthNumber(monthName) {
-    const index = monthNames.indexOf(monthName);
-    return (index + 1).toString().padStart(2, '0');
-}
-
-function calculateAdvancedAge() {
-    var year = document.getElementById('yearInput').value;
-    var monthInput = document.getElementById('monthInput').value.split(' - ');
-    var month = parseInt(monthInput[0], 10) - 1; // Months are 0-indexed in JavaScript
-    var day = document.getElementById('dayInput').value;
-    var birthday = new Date(year, month, day);
-    var today = new Date();
-    if (birthday > today || isNaN(birthday)) {
-        document.getElementById('result').innerText = 'Please enter a valid birthday';
-        return;
+      }
     }
 
-    var ageMonths = calculateAgeInMonths(birthday, today);
-    var ageYears = Math.floor(ageMonths / 12);
-    var remainingMonths = ageMonths % 12;
-
-    document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + remainingMonths + ' month(s) - (' + ageMonths + ' months)';
-    determineCategory(ageMonths);
-}
-
-function calculateAgeInMonths(birthday, today) {
-    var months = (today.getFullYear() - birthday.getFullYear()) * 12;
-    months -= birthday.getMonth();
-    months += today.getMonth();
-    if (today.getDate() < birthday.getDate()) {
-        months--;
+    function handleButtonClick(button, row) {
+      const buttonsInRow = document.querySelectorAll(`[data-row='${row}']`);
+      buttonsInRow.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      updateTotal();
     }
-    return months;
-}
 
-function determineCategory(months) {
-    let category;
-    if (months <= 17) category = 'Infant';
-    else if (months <= 30) category = 'Toddler';
-    else if (months <= 43) category = 'Preschool';
-    else if (months <= 55) category = 'JK';
-    else if (months <= 71) category = 'SK';
-    else category = 'Aged Out - (Over 6)';
+    function updateTotal() {
+      let total = 0;
+      document.querySelectorAll('.button-grid button.active').forEach(button => {
+        total += parseFloat(button.dataset.value);
+      });
+      document.getElementById('totalDisplay').textContent = `Total: ${total.toFixed(2)}`;
+    }
 
-    document.getElementById('category').innerText = 'Age Category: ' + category;
-}
+    function clearAllSelections() {
+      document.querySelectorAll('.button-grid button.active').forEach(button => {
+        button.classList.remove('active');
+      });
+      updateTotal();
+    }
 
-function clearAll() {
-    document.getElementById('yearInput').value = '';
-    document.getElementById('monthInput').value = '';
-    document.getElementById('dayInput').value = '';
-    document.getElementById('result').innerText = '';
-    document.getElementById('category').innerText = '';
-}
-</script>
+    createButtonGrid();
+
+    document.getElementById('allClearButton').addEventListener('click', clearAllSelections);
+  </script>
 </body>
 </html>
