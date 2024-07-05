@@ -1,93 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- view full code and MIT License at https://github.com/MicroSwitchers/agebyweekscalc.git -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Age Category Calculator</title>
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        text-align: center;
-        padding: 20px;
-        background-color: #2c568d;
-        color: #ffffff;
-    }
-    .container {
-        max-width: 200px;
-        margin: 20px auto;
-        background-color: #f2f2f2;
-        padding: 25px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        color: #333;
-    }
-    input, select, button {
-        width: 100%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 2px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-        transition: border-color 0.3s;
-    }
-    input:focus, button:focus, select:focus {
-        border-color: #27875f;
-        outline: none;
-    }
-    button {
-        background-color: #27875f;
-        color: white;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    button:hover {
-        background-color: #125551;
-    }
-    .result, .category {
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #ffffff;
-        border-radius: 5px;
-        color: #333;
-        box-shadow: inset 0 0 5px rgba(133, 133, 133, 0.05);
-    }
-    .format-label {
-        color: #dddddd;
-        font-size: 14px;
-        margin-bottom: 5px;
-    }
-    .credit {
-        margin-top: 30px;
-        color: #d8dce1;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Category Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --primary-color: #577d6f;
+            --title-colour: rgb(67, 120, 83);
+            --secondary-color: #83adc3;
+            --text-color: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --button-bg: #3c3c3c;
+            --button-hover: #4a4a4a;
+            --button-active: #50437b;
+            --focus-color: #1b8e5e;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 8px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 16px;
+            border-radius: 10px;
+            background-color: #282828;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .app-header {
+            background-color: #252a2e;
+            padding: 20px 16px;
+            border-radius: 10px 10px 0 0;
+            margin: -16px -16px 16px -16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: var(--title-colour);
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #22b97a, #22b97a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .title-divider {
+            width: 70%;
+            max-width: 280px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--title-colour), transparent);
+            margin: 16px auto;
+        }
+        .input-section {
+            margin-bottom: 16px;
+            padding: 12px;
+            background-color: #282727;
+            border-radius: 8px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+        }
+        .section-icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            background-color: var(--button-bg);
+            color: var(--text-color);
+        }
+        input:focus, button:focus, select:focus {
+            border-color: var(--focus-color);
+            outline: none;
+        }
+        button {
+            background-color: var(--focus-color);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: var(--button-active);
+        }
+        .results-container {
+            margin-top: 16px;
+            background-color: var(--button-bg);
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .result, .category {
+            padding: 12px;
+            color: var(--text-color);
+        }
+        .result {
+            background-color: #1c1c1c;
+            border-bottom: 1px solid var(--primary-color);
+        }
+        .category {
+            background-color: #1c1c1c;
+        }
+        .result-label, .category-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--focus-color);
+        }
+        .result-value, .category-value {
+            font-size: 1.2em;
+            color: var(--text-color);
+        }
+        .credit {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            text-align: center;
+        }
+        .months-total {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        /* Placeholder styles for better contrast */
+        input::-webkit-input-placeholder {
+            color: var(--text-secondary);
+        }
+        input:-moz-placeholder {
+            color: var (--text-secondary);
+        }
+        input::-moz-placeholder {
+            color: var (--text-secondary);
+        }
+        input:-ms-input-placeholder {
+            color: var (--text-secondary);
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h2>Age Category Calculator</h2>
-    <input type="number" id="yearInput" placeholder="YYYY (Year)" min="1900" max="2100">
-    <input list="months" id="monthInput" placeholder="# or MMM (Month)" onchange="validateMonthInput()">
-    <datalist id="months">
-        <option value="01 - Jan">
-        <option value="02 - Feb">
-        <option value="03 - Mar">
-        <option value="04 - Apr">
-        <option value="05 - May">
-        <option value="06 - Jun">
-        <option value="07 - Jul">
-        <option value="08 - Aug">
-        <option value="09 - Sep">
-        <option value="10 - Oct">
-        <option value="11 - Nov">
-        <option value="12 - Dec">
-    </datalist>
-    <input type="text" id="dayInput" placeholder="DD (Day)" maxlength="2" onchange="validateDayInput()">
-    <button onclick="calculateAdvancedAge()">Calculate Age</button>
+    <div class="app-header">
+        <h1><span class="section-icon">📅</span> Age Category Calculator</h1>
+        <div class="title-divider"></div>
+    </div>
+    
+    <div class="input-section">
+        <div class="section-title">
+            <span class="section-icon">✍️</span>
+            <span>Manual Input</span>
+        </div>
+        <input type="text" id="yearInput" placeholder="YY or YYYY (Year)" maxlength="4" onchange="validateYearInput()" onkeyup="handleYearInput(event)" autocomplete="off">
+        <input list="months" id="monthInput" placeholder="MMM or # (Month)" onchange="validateMonthInput()" onkeyup="handleMonthInput(event)" autocomplete="off">
+        <datalist id="months"></datalist>
+        <input list="days" id="dayInput" placeholder="DD (Day)" maxlength="2" onchange="validateDayInput()" onkeyup="handleDayInput(event)" autocomplete="off">
+        <datalist id="days"></datalist>
+    </div>
+
+    <div class="input-section">
+        <div class="section-title">
+            <span class="section-icon">📅</span>
+            <span>Date Picker</span>
+        </div>
+        <input type="date" id="datePicker" onchange="handleDatePickerChange()">
+    </div>
+
     <button onclick="clearAll()">All Clear</button>
-    <div class="result" id="result"></div>
-    <div class="category" id="category"></div>
+    
+    <div class="results-container">
+        <div class="result">
+            <div class="result-label">Age</div>
+            <div class="result-value" id="result"></div>
+        </div>
+        <div class="category">
+            <div class="category-label">Category</div>
+            <div class="category-value" id="category"></div>
+        </div>
+    </div>
 </div>
 <div class="credit">
     Created by Niall Brown - Early Childhood Vision Consultant (ECVC), with assistance from AI. MIT License.
@@ -96,57 +206,193 @@
 <script>
 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-document.getElementById('yearInput').addEventListener('input', function() {
-    if (this.value.length === 4) {
-        document.getElementById('monthInput').focus();
+function handleYearInput(event) {
+    if (event.key === 'Enter') {
+        validateYearInput();
     }
-});
+    syncInputs();
+    checkAndCalculate();
+}
 
-function validateMonthInput() {
-    let input = document.getElementById('monthInput').value.toLowerCase();
-    let monthNumber = input.match(/^(\d{1,2})/); // Matches one or two digits
+function validateYearInput() {
+    let input = document.getElementById('yearInput');
+    let year = parseInt(input.value, 10);
+    let currentYear = new Date().getFullYear();
+    
+    if (input.value.length === 2) {
+        let century = Math.floor(currentYear / 100) * 100;
+        year = century + year;
+        if (year > currentYear + 20) year -= 100;
+    }
+    
+    if (year < currentYear - 150 || year > currentYear + 20) {
+        alert("Please enter a valid year between " + (currentYear - 150) + " and " + (currentYear + 20));
+        input.value = '';
+        return;
+    }
+    
+    input.value = year.toString().padStart(4, '0');
+    document.getElementById('monthInput').focus();
+    syncInputs();
+    checkAndCalculate();
+}
+
+function handleMonthInput(event) {
+    let input = document.getElementById('monthInput');
+    let value = input.value.toLowerCase();
+    let datalist = document.getElementById('months');
+    datalist.innerHTML = '';
+
+    let formattedMonth = value.match(/^(\w{3})\s*-\s*\((\d{2})\)$/i);
+    if (formattedMonth) {
+        input.value = formattedMonth[0];
+        updateDayOptions();
+        document.getElementById('dayInput').focus();
+        syncInputs();
+        checkAndCalculate();
+        return;
+    }
+
+    let monthNumber = value.match(/^(\d{1,2})/);
     if (monthNumber) {
         let monthIndex = parseInt(monthNumber[1], 10) - 1;
-        if (monthIndex >= 0 && monthIndex < 12) {
-            document.getElementById('monthInput').value = monthNumber[1].padStart(2, '0') + ' - ' + monthNames[monthIndex]; // Sets input to "## - MMM" format
-        }
-    } else {
-        // Check if the input is an abbreviated month name
-        let monthName = getMonthName(input.slice(0, 3));
-        if (monthName) {
-            document.getElementById('monthInput').value = getMonthNumber(monthName) + ' - ' + monthName; // Sets input to "## - MMM" format
+        if (monthIndex === 0 && value.length === 1) {
+            // When user types "1", show options starting with "1"
+            let filteredMonths = [
+                { name: 'Jan', number: 1 },
+                { name: 'Oct', number: 10 },
+                { name: 'Nov', number: 11 },
+                { name: 'Dec', number: 12 }
+            ];
+            filteredMonths.forEach(month => {
+                let option = document.createElement('option');
+                option.value = `${month.name} - (${month.number.toString().padStart(2, '0')})`;
+                datalist.appendChild(option);
+            });
+            if (event.key === 'Enter') {
+                input.value = 'Jan - (01)';
+                updateDayOptions();
+                document.getElementById('dayInput').focus();
+                syncInputs();
+                checkAndCalculate();
+            }
+            return;
+        } else if (monthIndex >= 0 && monthIndex < 12) {
+            let monthValue = monthNames[monthIndex] + ' - (' + (monthIndex + 1).toString().padStart(2, '0') + ')';
+            input.value = monthValue;
+            updateDayOptions();
+            document.getElementById('dayInput').focus();
+            syncInputs();
+            checkAndCalculate();
+            return;
         }
     }
-    document.getElementById('dayInput').focus();
+    
+    let matchingMonths = monthNames.filter(month => month.toLowerCase().startsWith(value));
+    matchingMonths.forEach((month, index) => {
+        let option = document.createElement('option');
+        option.value = `${month} - (${(index + 1).toString().padStart(2, '0')})`;
+        datalist.appendChild(option);
+    });
+
+    // If there is only one match, update the input value on enter key press
+    if (matchingMonths.length === 1 && event.key === 'Enter') {
+        input.value = `${matchingMonths[0]} - (${(monthNames.indexOf(matchingMonths[0]) + 1).toString().padStart(2, '0')})`;
+        updateDayOptions();
+        document.getElementById('dayInput').focus();
+    }
+
+    syncInputs();
+    checkAndCalculate();
+}
+
+function updateDayOptions() {
+    let monthInput = document.getElementById('monthInput').value;
+    let monthMatch = monthInput.match(/\((\d{2})\)/);
+    if (!monthMatch) return;
+
+    let month = parseInt(monthMatch[1], 10);
+    let year = parseInt(document.getElementById('yearInput').value, 10);
+    let daysInMonth = new Date(year, month, 0).getDate();
+
+    let daysList = document.getElementById('days');
+    daysList.innerHTML = '';
+    for (let i = 1; i <= daysInMonth; i++) {
+        let option = document.createElement('option');
+        option.value = i.toString().padStart(2, '0');
+        daysList.appendChild(option);
+    }
+}
+
+function handleDayInput(event) {
+    if (event.key === 'Enter') {
+        validateDayInput();
+    }
+    syncInputs();
+    checkAndCalculate();
 }
 
 function validateDayInput() {
-    let input = document.getElementById('dayInput').value;
-    if (input.length === 1) {
-        document.getElementById('dayInput').value = '0' + input; // Add leading zero for single-digit input
+    let input = document.getElementById('dayInput');
+    let day = parseInt(input.value, 10);
+    let monthInput = document.getElementById('monthInput').value;
+    let monthMatch = monthInput.match(/\((\d{2})\)/);
+    if (monthMatch) {
+        let month = parseInt(monthMatch[1], 10);
+        let year = parseInt(document.getElementById('yearInput').value, 10);
+        let daysInMonth = new Date(year, month, 0).getDate();
+        if (day >= 1 && day <= daysInMonth) {
+            input.value = day.toString().padStart(2, '0');
+        } else {
+            input.value = '';
+        }
+    } else {
+        if (day >= 1 && day <= 31) {
+            input.value = day.toString().padStart(2, '0');
+        } else {
+            input.value = '';
+        }
+    }
+    syncInputs();
+    checkAndCalculate();
+}
+
+function syncInputs() {
+    let year = document.getElementById('yearInput').value;
+    let monthInput = document.getElementById('monthInput').value;
+    let day = document.getElementById('dayInput').value;
+    
+    if (year && monthInput && day) {
+        let monthMatch = monthInput.match(/\((\d{2})\)/);
+        if (monthMatch) {
+            let month = monthMatch[1];
+            document.getElementById('datePicker').value = `${year}-${month}-${day.padStart(2, '0')}`;
+        }
+    } else {
+        document.getElementById('datePicker').value = '';
     }
 }
 
-function getMonthName(input) {
-    const monthNamesLower = monthNames.map(name => name.toLowerCase());
-    const index = monthNamesLower.indexOf(input);
-    return index !== -1 ? monthNames[index] : null;
+function checkAndCalculate() {
+    let year = document.getElementById('yearInput').value;
+    let month = document.getElementById('monthInput').value;
+    let day = document.getElementById('dayInput').value;
+    
+    if (year && month && day) {
+        let monthMatch = month.match(/\((\d{2})\)/);
+        if (monthMatch) {
+            let monthNumber = parseInt(monthMatch[1], 10);
+            calculateAdvancedAge(new Date(year, monthNumber - 1, day));
+        }
+    } else {
+        clearResult();
+    }
 }
 
-function getMonthNumber(monthName) {
-    const index = monthNames.indexOf(monthName);
-    return (index + 1).toString().padStart(2, '0');
-}
-
-function calculateAdvancedAge() {
-    var year = document.getElementById('yearInput').value;
-    var monthInput = document.getElementById('monthInput').value.split(' - ');
-    var month = parseInt(monthInput[0], 10) - 1; // Months are 0-indexed in JavaScript
-    var day = document.getElementById('dayInput').value;
-    var birthday = new Date(year, month, day);
+function calculateAdvancedAge(birthday) {
     var today = new Date();
     if (birthday > today || isNaN(birthday)) {
-        document.getElementById('result').innerText = 'Please enter a valid birthday';
+        clearResult();
         return;
     }
 
@@ -154,7 +400,9 @@ function calculateAdvancedAge() {
     var ageYears = Math.floor(ageMonths / 12);
     var remainingMonths = ageMonths % 12;
 
-    document.getElementById('result').innerText = 'Age: ' + ageYears + ' years and ' + remainingMonths + ' month(s) - (' + ageMonths + ' months)';
+    document.getElementById('result').innerHTML = 
+        ageYears + ' years and ' + remainingMonths + ' month(s)' +
+        '<div class="months-total">(' + ageMonths + ' months)</div>';
     determineCategory(ageMonths);
 }
 
@@ -177,18 +425,38 @@ function determineCategory(months) {
     else if (months <= 71) category = 'SK';
     else category = 'Aged Out - (Over 6)';
 
-    document.getElementById('category').innerText = 'Age Category: ' + category;
+    document.getElementById('category').innerText = category;
+}
+
+function clearResult() {
+    document.getElementById('result').innerText = '';
+    document.getElementById('category').innerText = '';
 }
 
 function clearAll() {
     document.getElementById('yearInput').value = '';
     document.getElementById('monthInput').value = '';
     document.getElementById('dayInput').value = '';
-    document.getElementById('result').innerText = '';
-    document.getElementById('category').innerText = '';
+    document.getElementById('datePicker').value = '';
+    clearResult();
+    document.getElementById('yearInput').focus();
+}
+
+function handleDatePickerChange() {
+    let datePickerValue = document.getElementById('datePicker').value;
+    if (datePickerValue) {
+        let [year, month, day] = datePickerValue.split('-');
+        let selectedDate = new Date(year, month - 1, day);
+        
+        document.getElementById('yearInput').value = selectedDate.getFullYear();
+        document.getElementById('monthInput').value = monthNames[selectedDate.getMonth()] + ' - (' + (selectedDate.getMonth() + 1).toString().padStart(2, '0') + ')';
+        document.getElementById('dayInput').value = selectedDate.getDate().toString().padStart(2, '0');
+        
+        calculateAdvancedAge(selectedDate);
+    } else {
+        clearAll();
+    }
 }
 </script>
 </body>
 </html>
-
-
