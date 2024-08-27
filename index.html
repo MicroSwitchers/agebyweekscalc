@@ -44,7 +44,10 @@
 
         <div class="tab-content" id="date-picker-tab">
             <div class="input-section">
-                <input type="date" id="datePicker">
+                <div class="input-group">
+                    <label for="datePicker">Date:</label>
+                    <input type="date" id="datePicker">
+                </div>
             </div>
         </div>
 
@@ -66,16 +69,28 @@
             </div>
         </div>
 
-        <div class="info-section">
-            <h2>How Age Categories Are Calculated</h2>
-            <ul>
-                <li><strong>Infant:</strong> 0 to 17 months old</li>
-                <li><strong>Toddler:</strong> 18 to 30 months old</li>
-                <li><strong>Preschool:</strong> 31 to 43 months old</li>
-                <li><strong>JK (Junior Kindergarten):</strong> 44 to 55 months old</li>
-                <li><strong>SK (Senior Kindergarten):</strong> 56 to 71 months old</li>
-                <li><strong>Aged Out:</strong> 72 months and older (over 6 years)</li>
-            </ul>
+        <div class="info-drawer">
+            <button class="info-drawer-toggle" onclick="toggleInfoDrawer()">
+                ℹ️ More Information
+            </button>
+            <div class="info-drawer-content">
+                <div class="info-section">
+                    <h2>How Age Categories Are Calculated</h2>
+                    <ul>
+                        <li><strong>Infant:</strong> 0 to 17 months old</li>
+                        <li><strong>Toddler:</strong> 18 to 30 months old</li>
+                        <li><strong>Preschool:</strong> 31 to 43 months old</li>
+                        <li><strong>JK (Junior Kindergarten):</strong> 44 to 55 months old</li>
+                        <li><strong>SK (Senior Kindergarten):</strong> 56 to 71 months old</li>
+                        <li><strong>Aged Out:</strong> 72 months and older (over 6 years)</li>
+                    </ul>
+                </div>
+                <div class="info-section">
+                    <h2>JK Eligibility in Ontario</h2>
+                    <p>In Ontario, children are eligible to start Junior Kindergarten (JK) in September of the year they turn 4 years old. For example, if a child turns 4 anytime in 2023 (even if their birthday is in December), they are eligible to start JK in September 2023.</p>
+                    <p>This system allows children to start school as young as 3 years and 8 months, or as old as 4 years and 8 months when they begin JK in September.</p>
+                </div>
+            </div>
         </div>
     </div>
 

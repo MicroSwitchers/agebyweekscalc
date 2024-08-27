@@ -116,6 +116,7 @@ h1 {
 
 .input-group {
     margin-bottom: 10px;
+    text-align: left;
 }
 
 label {
@@ -134,6 +135,7 @@ input {
     background-color: var(--input-bg);
     color: var(--text-color);
     font-size: 1rem;
+    text-align: left;
 }
 
 input:focus {
@@ -148,6 +150,7 @@ input[type="date"] {
     color: var(--text-color);
     font-family: "Inter", sans-serif;
     font-size: 1rem;
+    text-align: left;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -226,12 +229,45 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-style: italic;
 }
 
-.info-section {
+.info-drawer {
     margin-top: 20px;
-    padding: 15px;
+}
+
+.info-drawer-toggle {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.info-drawer-toggle:hover {
+    background-color: var(--button-hover);
+}
+
+.info-drawer-content {
+    display: none;
     background-color: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 6px 6px;
+    padding: 15px;
+    margin-top: 5px;
+}
+
+.info-drawer-content.active {
+    display: block;
+}
+
+.info-section {
+    margin-bottom: 20px;
+}
+
+.info-section:last-child {
+    margin-bottom: 0;
 }
 
 .info-section h2 {
@@ -253,6 +289,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .info-section ul li strong {
     color: var(--secondary-color);
+}
+
+.info-section p {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
 }
 
 .credit {
@@ -289,6 +330,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         padding: 20px;
     }
 
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group label {
+        flex: 0 0 80px;
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+
+    input {
+        flex: 1;
+    }
+
     input, .clear-button {
         padding: 10px 12px;
         font-size: 1rem;
@@ -306,7 +362,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         font-size: 1.2rem;
     }
 
-    .info-section ul li {
+    .info-section ul li, .info-section p {
         font-size: 1rem;
     }
 }

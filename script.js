@@ -8,6 +8,7 @@ function handleYearInput(event) {
             document.getElementById('monthInput').focus();
         }
     }
+    updateDayOptions();
     checkAndCalculate();
 }
 
@@ -24,7 +25,6 @@ function validateYearInput() {
     }
     
     if (isNaN(year) || year < currentYear - 150 || year > currentYear) {
-        alert("Please enter a valid year between " + (currentYear - 150) + " and " + currentYear);
         input.value = '';
         return;
     }
@@ -49,19 +49,26 @@ function handleMonthInput(event) {
 
     if (event.key === 'Enter' || event.key === 'Tab') {
         event.preventDefault();
-        let selectedOption = document.querySelector('#months option');
-        if (selectedOption) {
-            input.value = selectedOption.value;
-            updateDayOptions();
+        confirmMonthInput();
+        if (event.key === 'Tab') {
             document.getElementById('dayInput').focus();
         }
-        checkAndCalculate();
         return;
     }
 
     updateMonthOptions(value);
     updateDayOptions();
     checkAndCalculate();
+}
+
+function confirmMonthInput() {
+    let input = document.getElementById('monthInput');
+    let selectedOption = document.querySelector('#months option');
+    if (selectedOption) {
+        input.value = selectedOption.value;
+        updateDayOptions();
+        checkAndCalculate();
+    }
 }
 
 function updateMonthOptions(value) {
@@ -132,12 +139,13 @@ function updateDayOptions() {
 function handleDayInput(event) {
     updateDayOptions();
     if (event.key === 'Enter' || event.key === 'Tab') {
-        validateDayInput();
+        event.preventDefault();
+        confirmDayInput();
     }
     checkAndCalculate();
 }
 
-function validateDayInput() {
+function confirmDayInput() {
     let input = document.getElementById('dayInput');
     let day = parseInt(input.value, 10);
     let monthInput = document.getElementById('monthInput').value;
@@ -195,8 +203,6 @@ function calculateAdvancedAge(birthday) {
         return;
     }
 
-    var ageMilliseconds = today - birthday;
-    var ageWeeks = Math.floor(ageMilliseconds / (7 * 24 * 60 * 60 * 1000));
     var ageMonths = calculateAgeInMonths(birthday, today);
     var ageYears = Math.floor(ageMonths / 12);
     var remainingMonths = ageMonths % 12;
@@ -204,7 +210,7 @@ function calculateAdvancedAge(birthday) {
     document.getElementById('result').innerHTML = 
         `<strong>${ageYears} year${ageYears !== 1 ? 's' : ''} and ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}</strong>`;
     document.getElementById('result-weeks').textContent = 
-        `(${ageWeeks} Week${ageWeeks !== 1 ? 's' : ''})`;
+        `(${ageMonths} Month${ageMonths !== 1 ? 's' : ''})`;
     determineCategory(ageMonths);
     calculateJKEligibility(birthday);
 }
@@ -286,14 +292,21 @@ function switchTab(tab) {
     }
 }
 
+function toggleInfoDrawer() {
+    const drawerContent = document.querySelector('.info-drawer-content');
+    drawerContent.classList.toggle('active');
+}
+
 // Event listeners
 document.getElementById('yearInput').addEventListener('keydown', handleYearInput);
 document.getElementById('yearInput').addEventListener('input', handleYearInput);
 document.getElementById('yearInput').addEventListener('blur', validateYearInput);
 document.getElementById('monthInput').addEventListener('input', handleMonthInput);
 document.getElementById('monthInput').addEventListener('keydown', handleMonthInput);
+document.getElementById('monthInput').addEventListener('blur', confirmMonthInput);
 document.getElementById('dayInput').addEventListener('input', handleDayInput);
 document.getElementById('dayInput').addEventListener('keydown', handleDayInput);
+document.getElementById('dayInput').addEventListener('blur', confirmDayInput);
 document.getElementById('datePicker').addEventListener('change', handleDatePickerChange);
 
 // Tab switching
