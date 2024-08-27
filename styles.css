@@ -1,0 +1,309 @@
+:root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --input-bg: #2c2c2c;
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --text-color: #ffffff;
+    --text-secondary: #b3b3b3;
+    --error-color: #cf6679;
+    --button-bg: #bb86fc;
+    --button-text: #000000;
+    --button-hover: #a174e8;
+    --button-active: #9263db;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: var(--card-bg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.app-header {
+    background-color: rgba(187, 134, 252, 0.1);
+    padding: 25px 20px;
+    border-radius: 10px 10px 0 0;
+    margin: -30px -30px 30px -30px;
+    text-align: center;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.title-divider {
+    width: 70%;
+    max-width: 280px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+    margin: 20px auto;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 0;
+    justify-content: center;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 10px 20px;
+    background-color: var(--input-bg);
+    border: none;
+    border-radius: 10px 10px 0 0;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    margin-right: 5px;
+    position: relative;
+    text-align: center;
+}
+
+.tab-button:last-child {
+    margin-right: 0;
+}
+
+.tab-button.active {
+    background-color: var(--primary-color);
+    color: var(--button-text);
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.tab-button:hover:not(.active) {
+    background-color: var(--button-hover);
+    color: var(--button-text);
+}
+
+.tab-icon {
+    margin-right: 5px;
+    font-size: 1.2em;
+}
+
+.tab-content {
+    display: none;
+    background-color: var(--card-bg);
+    border-radius: 0 0 10px 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: -1px;
+    text-align: center;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.input-section {
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--secondary-color);
+    font-weight: bold;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--input-bg);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.2);
+}
+
+input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    color: var(--text-color);
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.clear-button {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.clear-button:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.clear-button:active {
+    background-color: var(--button-active);
+    transform: translateY(0);
+}
+
+.results-container {
+    background-color: var(--input-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.result, .category, .jk-eligibility {
+    padding: 20px;
+}
+
+.result {
+    background-color: rgba(187, 134, 252, 0.1);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.category {
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.result-label, .category-label, .jk-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--secondary-color);
+    font-size: 18px;
+}
+
+.result-value, .category-value, .jk-value {
+    font-size: 24px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.result-weeks {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+.jk-eligibility {
+    background-color: rgba(3, 218, 198, 0.1);
+}
+
+.jk-note {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.info-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+}
+
+.info-section h2 {
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.info-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.info-section ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.info-section ul li strong {
+    color: var(--secondary-color);
+}
+
+.credit {
+    margin-top: 30px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+    }
+    
+    .app-header {
+        padding: 20px 15px;
+        margin: -20px -20px 20px -20px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    .input-section {
+        padding: 15px;
+    }
+    
+    input, .clear-button {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .result-value, .category-value, .jk-value {
+        font-size: 20px;
+    }
+
+    .result-weeks {
+        font-size: 18px;
+    }
+}
