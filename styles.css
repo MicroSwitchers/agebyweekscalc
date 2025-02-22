@@ -57,6 +57,18 @@ h1 {
     letter-spacing: 1px;
 }
 
+.header-icon {
+    height: 1.5em;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.section-icon {
+    height: 1.5em;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
 .title-divider {
     width: 70%;
     max-width: 200px;
@@ -136,6 +148,7 @@ input {
     color: var(--text-color);
     font-size: 1rem;
     text-align: left;
+    transition: opacity 0.2s ease;
 }
 
 input:focus {
@@ -185,6 +198,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 15px;
 }
 
+.results-container > div {
+    transition: opacity 0.3s ease;
+}
+
 .result, .category, .jk-eligibility {
     padding: 12px;
 }
@@ -210,6 +227,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--text-color);
     font-weight: 600;
     word-wrap: break-word;
+    transition: opacity 0.2s ease;
 }
 
 .result-weeks {
@@ -341,6 +359,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         margin-right: 10px;
     }
 
+    .input-group input {
+        transition: all 0.2s ease;
+    }
+
     input {
         flex: 1;
     }
@@ -364,5 +386,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     .info-section ul li, .info-section p {
         font-size: 1rem;
+    }
+    
+    .header-icon {
+        height: 1.8em;
+    }
+
+    .section-icon {
+        height: 1.8em;
     }
 }

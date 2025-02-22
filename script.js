@@ -1,15 +1,31 @@
 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+// Add debounce function at the top
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Modify input handlers to use debounce
 function handleYearInput(event) {
     if (event.key === 'Enter' || event.key === 'Tab') {
         event.preventDefault();
         validateYearInput();
         if (event.key === 'Tab') {
             document.getElementById('monthInput').focus();
+        } else if (event.key === 'Enter' && document.getElementById('yearInput').value) {
+            document.getElementById('monthInput').focus();
         }
+        return;
     }
-    updateDayOptions();
-    checkAndCalculate();
+    debouncedUpdate();
 }
 
 function validateYearInput() {
@@ -34,31 +50,32 @@ function validateYearInput() {
     checkAndCalculate();
 }
 
+// Modify handleMonthInput to include predictive text
 function handleMonthInput(event) {
     let input = document.getElementById('monthInput');
     let value = input.value.toLowerCase();
 
     if (event.key === 'Backspace' || event.key === 'Delete') {
-        setTimeout(() => {
-            updateMonthOptions(input.value.toLowerCase());
-            updateDayOptions();
-            checkAndCalculate();
-        }, 0);
+        updateMonthOptions(value);
+        debouncedUpdate();
         return;
     }
 
     if (event.key === 'Enter' || event.key === 'Tab') {
         event.preventDefault();
-        confirmMonthInput();
-        if (event.key === 'Tab') {
-            document.getElementById('dayInput').focus();
+        if (input.value) {
+            confirmMonthInput();
+            if (event.key === 'Tab') {
+                document.getElementById('dayInput').focus();
+            } else if (event.key === 'Enter') {
+                document.getElementById('dayInput').focus();
+            }
         }
         return;
     }
 
     updateMonthOptions(value);
-    updateDayOptions();
-    checkAndCalculate();
+    debouncedUpdate();
 }
 
 function confirmMonthInput() {
@@ -75,6 +92,11 @@ function updateMonthOptions(value) {
     let datalist = document.getElementById('months');
     datalist.innerHTML = '';
 
+    if (!value) return;
+
+    value = value.toLowerCase();
+    
+    // Handle numeric input
     let monthNumber = value.match(/^(\d{1,2})/);
     if (monthNumber) {
         let monthIndex = parseInt(monthNumber[1], 10) - 1;
@@ -85,8 +107,12 @@ function updateMonthOptions(value) {
         }
     }
     
-    let matchingMonths = monthNames.filter(month => month.toLowerCase().startsWith(value));
-    matchingMonths.forEach((month, index) => {
+    // Handle text input
+    let matchingMonths = monthNames.filter(month => 
+        month.toLowerCase().startsWith(value)
+    );
+    
+    matchingMonths.forEach(month => {
         let monthValue = `${month} - (${(monthNames.indexOf(month) + 1).toString().padStart(2, '0')})`;
         addMonthOption(datalist, monthValue);
     });
@@ -125,12 +151,15 @@ function updateDayOptions() {
     }
 
     // Filter days based on user input
-    let filteredDays = Array.from(daysList.options)
-        .filter(option => option.value.startsWith(dayValue))
-        .map(option => option.value);
+    if (dayValue) {
+        let filteredDays = Array.from(daysList.options)
+            .filter(option => option.value.startsWith(dayValue))
+            .map(option => option.value);
 
-    if (filteredDays.length === 1 && filteredDays[0] !== dayValue) {
-        dayInput.value = filteredDays[0];
+        // Auto-complete if there's only one match
+        if (filteredDays.length === 1 && filteredDays[0] !== dayValue) {
+            dayInput.value = filteredDays[0];
+        }
     }
 
     dayInput.setAttribute('placeholder', `DD (1-${daysInMonth})`);
@@ -140,9 +169,16 @@ function handleDayInput(event) {
     updateDayOptions();
     if (event.key === 'Enter' || event.key === 'Tab') {
         event.preventDefault();
-        confirmDayInput();
+        let input = document.getElementById('dayInput');
+        if (input.value) {
+            confirmDayInput();
+            if (event.key === 'Enter') {
+                input.blur(); // Remove focus from input
+                checkAndCalculate();
+            }
+        }
     }
-    checkAndCalculate();
+    debouncedUpdate();
 }
 
 function confirmDayInput() {
@@ -196,23 +232,49 @@ function checkAndCalculate() {
     }
 }
 
+// Create debounced update function
+const debouncedUpdate = debounce(() => {
+    updateDayOptions();
+    checkAndCalculate();
+}, 150);
+
+// Add loading state management
+function setLoadingState(isLoading) {
+    const inputs = ['yearInput', 'monthInput', 'dayInput', 'datePicker'];
+    inputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.style.opacity = isLoading ? '0.7' : '1';
+            element.style.pointerEvents = isLoading ? 'none' : 'auto';
+        }
+    });
+}
+
+// Modify calculateAdvancedAge to handle loading states
 function calculateAdvancedAge(birthday) {
-    var today = new Date();
-    if (birthday > today || isNaN(birthday)) {
-        clearResult();
-        return;
-    }
+    setLoadingState(true);
+    
+    setTimeout(() => {
+        var today = new Date();
+        if (birthday > today || isNaN(birthday)) {
+            clearResult();
+            setLoadingState(false);
+            return;
+        }
 
-    var ageMonths = calculateAgeInMonths(birthday, today);
-    var ageYears = Math.floor(ageMonths / 12);
-    var remainingMonths = ageMonths % 12;
+        var ageMonths = calculateAgeInMonths(birthday, today);
+        var ageYears = Math.floor(ageMonths / 12);
+        var remainingMonths = ageMonths % 12;
 
-    document.getElementById('result').innerHTML = 
-        `<strong>${ageYears} year${ageYears !== 1 ? 's' : ''} and ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}</strong>`;
-    document.getElementById('result-weeks').textContent = 
-        `(${ageMonths} Month${ageMonths !== 1 ? 's' : ''})`;
-    determineCategory(ageMonths);
-    calculateJKEligibility(birthday);
+        document.getElementById('result').innerHTML = 
+            `<strong>${ageYears} year${ageYears !== 1 ? 's' : ''} and ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}</strong>`;
+        document.getElementById('result-weeks').textContent = 
+            `(${ageMonths} Month${ageMonths !== 1 ? 's' : ''})`;
+        determineCategory(ageMonths);
+        calculateJKEligibility(birthday);
+        
+        setLoadingState(false);
+    }, 0);
 }
 
 function calculateAgeInMonths(birthday, today) {
