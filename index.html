@@ -23,6 +23,9 @@
             <button class="tab-button" data-tab="date-picker">
                 <span class="tab-icon">📅</span> Date Picker
             </button>
+            <button class="tab-button" data-tab="time-between">
+                <span class="tab-icon">⏳</span> Time Between
+            </button>
         </div>
 
         <div class="tab-content active" id="manual-tab">
@@ -49,6 +52,46 @@
                 <div class="input-group">
                     <label for="datePicker">Date:</label>
                     <input type="date" id="datePicker">
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="time-between-tab">
+            <div class="input-section">
+                <div class="date-group">
+                    <h3>Start Date</h3>
+                    <div class="input-group">
+                        <label for="startYearInput">Year:</label>
+                        <input type="text" id="startYearInput" placeholder="YYYY" maxlength="4" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="startMonthInput">Month:</label>
+                        <input list="startMonths" id="startMonthInput" placeholder="MMM or #" autocomplete="off">
+                        <datalist id="startMonths"></datalist>
+                    </div>
+                    <div class="input-group">
+                        <label for="startDayInput">Day:</label>
+                        <input list="startDays" id="startDayInput" placeholder="DD" maxlength="2" autocomplete="off">
+                        <datalist id="startDays"></datalist>
+                    </div>
+                </div>
+
+                <div class="date-group">
+                    <h3>End Date</h3>
+                    <div class="input-group">
+                        <label for="endYearInput">Year:</label>
+                        <input type="text" id="endYearInput" placeholder="YYYY" maxlength="4" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="endMonthInput">Month:</label>
+                        <input list="endMonths" id="endMonthInput" placeholder="MMM or #" autocomplete="off">
+                        <datalist id="endMonths"></datalist>
+                    </div>
+                    <div class="input-group">
+                        <label for="endDayInput">Day:</label>
+                        <input list="endDays" id="endDayInput" placeholder="DD" maxlength="2" autocomplete="off">
+                        <datalist id="endDays"></datalist>
+                    </div>
                 </div>
             </div>
         </div>

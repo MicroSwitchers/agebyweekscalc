@@ -77,15 +77,18 @@ h1 {
     margin: 10px auto;
 }
 
+/* Update tabs container */
 .tabs {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 8px;
     margin-bottom: 15px;
 }
 
+/* Update tab button styles */
 .tab-button {
     flex: 1;
-    padding: 8px;
+    padding: 8px 4px;
     background-color: var(--input-bg);
     border: none;
     border-radius: 8px 8px 0 0;
@@ -93,12 +96,14 @@ h1 {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-align: center;
+    margin: 0; /* Remove any default margins */
 }
 
+/* Remove the last-child margin since we're using gap */
 .tab-button:last-child {
-    margin-left: 5px;
+    margin-left: 0;
 }
 
 .tab-button.active {
@@ -120,6 +125,35 @@ h1 {
 
 .tab-content.active {
     display: block;
+}
+
+.date-group {
+    background: var(--input-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.date-group h3 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Add specific styles for the time between results */
+.time-between-result {
+    text-align: center;
+    padding: 15px;
+    background: var(--input-bg);
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+/* Modify the results container for time between mode */
+#time-between-tab .results-container {
+    margin-top: 20px;
 }
 
 .input-section {
@@ -321,6 +355,48 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     text-align: center;
 }
 
+/* Update date group styles to match manual input */
+.date-group {
+    background: var(--input-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.date-group h3 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Ensure consistent input group styling */
+.date-group .input-group {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* Match input styles across tabs */
+.date-group input {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid var(--input-bg);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    text-align: left;
+    transition: opacity 0.2s ease;
+}
+
+.date-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+}
+
+/* Add responsive styles for larger screens */
 @media (min-width: 481px) {
     body {
         padding: 20px;
@@ -339,9 +415,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         font-size: 1.8rem;
     }
 
+    .tabs {
+        gap: 10px;
+    }
+
     .tab-button {
-        font-size: 1rem;
-        padding: 10px;
+        padding: 10px 8px;
+        font-size: 0.9rem;
     }
 
     .input-section {
@@ -394,5 +474,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     .section-icon {
         height: 1.8em;
+    }
+
+    .date-group {
+        padding: 20px;
+    }
+
+    .date-group .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .date-group .input-group label {
+        flex: 0 0 80px;
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+
+    .date-group input {
+        flex: 1;
+        padding: 10px 12px;
+        font-size: 1rem;
+    }
+
+    .date-group h3 {
+        font-size: 1rem;
+        margin-bottom: 15px;
     }
 }

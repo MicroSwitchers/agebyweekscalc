@@ -359,6 +359,475 @@ function toggleInfoDrawer() {
     drawerContent.classList.toggle('active');
 }
 
+// Add these functions for start date handling
+function handleStartYearInput(event) {
+    if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        validateStartYearInput();
+        if (event.key === 'Tab') {
+            document.getElementById('startMonthInput').focus();
+        } else if (event.key === 'Enter' && document.getElementById('startYearInput').value) {
+            document.getElementById('startMonthInput').focus();
+        }
+        return;
+    }
+    debouncedTimeBetweenUpdate();
+}
+
+function handleStartMonthInput(event) {
+    let input = document.getElementById('startMonthInput');
+    let value = input.value.toLowerCase();
+
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+        updateStartMonthOptions(value);
+        debouncedTimeBetweenUpdate();
+        return;
+    }
+
+    if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        if (input.value) {
+            confirmStartMonthInput();
+            if (event.key === 'Tab') {
+                document.getElementById('startDayInput').focus();
+            } else if (event.key === 'Enter') {
+                document.getElementById('startDayInput').focus();
+            }
+        }
+        return;
+    }
+
+    updateStartMonthOptions(value);
+    debouncedTimeBetweenUpdate();
+}
+
+function handleStartDayInput(event) {
+    if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        let input = document.getElementById('startDayInput');
+        if (input.value) {
+            confirmStartDayInput();
+            if (event.key === 'Enter') {
+                document.getElementById('endYearInput').focus();
+            }
+        }
+    }
+    updateStartDayOptions();
+    debouncedTimeBetweenUpdate();
+}
+
+function handleEndYearInput(event) {
+    if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        validateEndYearInput();
+        if (event.key === 'Tab') {
+            document.getElementById('endMonthInput').focus();
+        } else if (event.key === 'Enter' && document.getElementById('endYearInput').value) {
+            document.getElementById('endMonthInput').focus();
+        }
+        return;
+    }
+    debouncedTimeBetweenUpdate();
+}
+
+// Add validation functions
+function validateStartYearInput() {
+    let input = document.getElementById('startYearInput');
+    let year = parseInt(input.value, 10);
+    let currentYear = new Date().getFullYear();
+    
+    if (input.value.length === 2) {
+        year = 2000 + year;
+        if (year > currentYear) {
+            year -= 100;
+        }
+    }
+    
+    if (isNaN(year) || year < currentYear - 150 || year > currentYear) {
+        input.value = '';
+        return;
+    }
+    
+    input.value = year.toString();
+    updateStartDayOptions();
+    calculateTimeBetween();
+}
+
+// Add the calculation function
+function calculateTimeBetween() {
+    const startDate = getDateFromInputs('start');
+    const endDate = getDateFromInputs('end');
+    
+    if (!startDate || !endDate) return;
+    
+    if (endDate < startDate) {
+        document.getElementById('result').innerHTML = 
+            '<strong>End date must be after start date</strong>';
+        document.getElementById('result-weeks').textContent = '';
+        return;
+    }
+    
+    const monthsDiff = calculateMonthsBetween(startDate, endDate);
+    const years = Math.floor(monthsDiff / 12);
+    const months = monthsDiff % 12;
+    
+    document.getElementById('result').innerHTML = 
+        `<strong>${years} year${years !== 1 ? 's' : ''} and ${months} month${months !== 1 ? 's' : ''}</strong>`;
+    document.getElementById('result-weeks').textContent = 
+        `(${monthsDiff} Month${monthsDiff !== 1 ? 's' : ''})`;
+    
+    // Hide category and JK eligibility for time between calculations
+    document.querySelector('.category').style.display = 'none';
+    document.querySelector('.jk-eligibility').style.display = 'none';
+}
+
+// Add helper function for calculating months between dates
+function calculateMonthsBetween(startDate, endDate) {
+    let months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+    months += endDate.getMonth() - startDate.getMonth();
+    
+    // Adjust for day of month
+    if (endDate.getDate() < startDate.getDate()) {
+        months--;
+    }
+    
+    return months;
+}
+
+// Add the debounced update function for time between calculations
+const debouncedTimeBetweenUpdate = debounce(() => {
+    calculateTimeBetween();
+}, 300);
+
+// Add this helper function to get dates from inputs
+function getDateFromInputs(prefix) {
+    const year = document.getElementById(`${prefix}YearInput`).value;
+    const monthInput = document.getElementById(`${prefix}MonthInput`).value;
+    const day = document.getElementById(`${prefix}DayInput`).value;
+    
+    if (!year || !monthInput || !day) return null;
+    
+    const monthMatch = monthInput.match(/\((\d{2})\)/);
+    if (!monthMatch) return null;
+    
+    return new Date(year, parseInt(monthMatch[1], 10) - 1, parseInt(day, 10));
+}
+
+// Add the month options update function for start date
+function updateStartMonthOptions(value) {
+    let datalist = document.getElementById('startMonths');
+    datalist.innerHTML = '';
+
+    if (!value) return;
+
+    value = value.toLowerCase();
+    
+    // Handle numeric input
+    let monthNumber = value.match(/^(\d{1,2})/);
+    if (monthNumber) {
+        let monthIndex = parseInt(monthNumber[1], 10) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            let monthValue = `${monthNames[monthIndex]} - (${(monthIndex + 1).toString().padStart(2, '0')})`;
+            addMonthOption(datalist, monthValue);
+            return;
+        }
+    }
+    
+    // Handle text input
+    let matchingMonths = monthNames.filter(month => 
+        month.toLowerCase().startsWith(value)
+    );
+    
+    matchingMonths.forEach(month => {
+        let monthValue = `${month} - (${(monthNames.indexOf(month) + 1).toString().padStart(2, '0')})`;
+        addMonthOption(datalist, monthValue);
+    });
+}
+
+// Add the month options update function for end date
+function updateEndMonthOptions(value) {
+    let datalist = document.getElementById('endMonths');
+    datalist.innerHTML = '';
+
+    if (!value) return;
+
+    value = value.toLowerCase();
+    
+    // Handle numeric input
+    let monthNumber = value.match(/^(\d{1,2})/);
+    if (monthNumber) {
+        let monthIndex = parseInt(monthNumber[1], 10) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+            let monthValue = `${monthNames[monthIndex]} - (${(monthIndex + 1).toString().padStart(2, '0')})`;
+            addMonthOption(datalist, monthValue);
+            return;
+        }
+    }
+    
+    // Handle text input
+    let matchingMonths = monthNames.filter(month => 
+        month.toLowerCase().startsWith(value)
+    );
+    
+    matchingMonths.forEach(month => {
+        let monthValue = `${month} - (${(monthNames.indexOf(month) + 1).toString().padStart(2, '0')})`;
+        addMonthOption(datalist, monthValue);
+    });
+}
+
+// Add event listeners for the time between inputs
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('startYearInput').addEventListener('keydown', handleStartYearInput);
+    document.getElementById('startMonthInput').addEventListener('keydown', handleStartMonthInput);
+    document.getElementById('startDayInput').addEventListener('keydown', handleStartDayInput);
+    document.getElementById('endYearInput').addEventListener('keydown', handleEndYearInput);
+    document.getElementById('endMonthInput').addEventListener('keydown', handleEndMonthInput);
+    document.getElementById('endDayInput').addEventListener('keydown', handleEndDayInput);
+});
+
+// Add validation functions for end date inputs
+function validateEndYearInput() {
+    let input = document.getElementById('endYearInput');
+    let year = parseInt(input.value, 10);
+    let currentYear = new Date().getFullYear();
+    
+    if (input.value.length === 2) {
+        year = 2000 + year;
+        if (year > currentYear) {
+            year -= 100;
+        }
+    }
+    
+    if (isNaN(year) || year < currentYear - 150 || year > currentYear + 50) {
+        input.value = '';
+        return;
+    }
+    
+    input.value = year.toString();
+    updateEndDayOptions();
+    calculateTimeBetween();
+}
+
+function updateEndDayOptions() {
+    let yearInput = document.getElementById('endYearInput').value;
+    let monthInput = document.getElementById('endMonthInput').value;
+    let dayInput = document.getElementById('endDayInput');
+    let dayValue = dayInput.value;
+    
+    let year = parseInt(yearInput, 10);
+    let monthMatch = monthInput.match(/\((\d{2})\)/);
+    
+    if (isNaN(year) || !monthMatch) {
+        dayInput.setAttribute('placeholder', 'DD');
+        return;
+    }
+    
+    let month = parseInt(monthMatch[1], 10);
+    let daysInMonth = new Date(year, month, 0).getDate();
+
+    let daysList = document.getElementById('endDays');
+    daysList.innerHTML = '';
+    
+    for (let i = 1; i <= daysInMonth; i++) {
+        let option = document.createElement('option');
+        option.value = i.toString().padStart(2, '0');
+        daysList.appendChild(option);
+    }
+
+    if (dayValue) {
+        let filteredDays = Array.from(daysList.options)
+            .filter(option => option.value.startsWith(dayValue))
+            .map(option => option.value);
+
+        if (filteredDays.length === 1 && filteredDays[0] !== dayValue) {
+            dayInput.value = filteredDays[0];
+        }
+    }
+
+    dayInput.setAttribute('placeholder', `DD (1-${daysInMonth})`);
+}
+
+function handleEndDayInput(event) {
+    updateEndDayOptions();
+    if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        let input = document.getElementById('endDayInput');
+        if (input.value) {
+            confirmEndDayInput();
+            if (event.key === 'Enter') {
+                input.blur(); // Remove focus from input
+                calculateTimeBetween();
+            }
+        }
+    }
+    debouncedTimeBetweenUpdate();
+}
+
+function confirmEndDayInput() {
+    let input = document.getElementById('endDayInput');
+    let daysList = document.getElementById('endDays');
+    let selectedOption = Array.from(daysList.options)
+        .find(option => option.value === input.value);
+        
+    if (selectedOption) {
+        input.value = selectedOption.value;
+        calculateTimeBetween();
+    }
+}
+
+// Add event listeners for end date inputs
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing event listeners...
+    document.getElementById('endYearInput').addEventListener('keydown', handleEndYearInput);
+    document.getElementById('endMonthInput').addEventListener('keydown', handleEndMonthInput);
+    document.getElementById('endDayInput').addEventListener('keydown', handleEndDayInput);
+});
+
+// Add these functions for start date handling
+function updateStartDayOptions() {
+    let yearInput = document.getElementById('startYearInput').value;
+    let monthInput = document.getElementById('startMonthInput').value;
+    let dayInput = document.getElementById('startDayInput');
+    let dayValue = dayInput.value;
+    
+    let year = parseInt(yearInput, 10);
+    let monthMatch = monthInput.match(/\((\d{2})\)/);
+    
+    if (isNaN(year) || !monthMatch) {
+        dayInput.setAttribute('placeholder', 'DD');
+        return;
+    }
+    
+    let month = parseInt(monthMatch[1], 10);
+    let daysInMonth = new Date(year, month, 0).getDate();
+
+    let daysList = document.getElementById('startDays');
+    daysList.innerHTML = '';
+    
+    for (let i = 1; i <= daysInMonth; i++) {
+        let option = document.createElement('option');
+        option.value = i.toString().padStart(2, '0');
+        daysList.appendChild(option);
+    }
+
+    if (dayValue) {
+        let filteredDays = Array.from(daysList.options)
+            .filter(option => option.value.startsWith(dayValue))
+            .map(option => option.value);
+
+        if (filteredDays.length === 1 && filteredDays[0] !== dayValue) {
+            dayInput.value = filteredDays[0];
+        }
+    }
+
+    dayInput.setAttribute('placeholder', `DD (1-${daysInMonth})`);
+}
+
+function handleStartDayInput(event) {
+    if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        let input = document.getElementById('startDayInput');
+        if (input.value) {
+            confirmStartDayInput();
+            if (event.key === 'Enter') {
+                document.getElementById('endYearInput').focus();
+            }
+        }
+    }
+    updateStartDayOptions();
+    debouncedTimeBetweenUpdate();
+}
+
+function confirmStartDayInput() {
+    let input = document.getElementById('startDayInput');
+    let daysList = document.getElementById('startDays');
+    let selectedOption = Array.from(daysList.options)
+        .find(option => option.value === input.value);
+        
+    if (selectedOption) {
+        input.value = selectedOption.value;
+        calculateTimeBetween();
+    }
+}
+
+// Add the calculation function for time between dates
+function calculateTimeBetween() {
+    const startDate = getDateFromInputs('start');
+    const endDate = getDateFromInputs('end');
+    
+    if (!startDate || !endDate) return;
+    
+    if (endDate < startDate) {
+        document.getElementById('result').innerHTML = 
+            '<strong>End date must be after start date</strong>';
+        document.getElementById('result-weeks').textContent = '';
+        return;
+    }
+    
+    const monthsDiff = calculateMonthsBetween(startDate, endDate);
+    const years = Math.floor(monthsDiff / 12);
+    const months = monthsDiff % 12;
+    
+    // Update the results in the results container
+    document.getElementById('result').innerHTML = 
+        `<strong>${years} year${years !== 1 ? 's' : ''} and ${months} month${months !== 1 ? 's' : ''}</strong>`;
+    document.getElementById('result-weeks').textContent = 
+        `(${monthsDiff} Month${monthsDiff !== 1 ? 's' : ''})`;
+    
+    // Hide category and JK eligibility for time between calculations
+    document.querySelector('.category').style.display = 'none';
+    document.querySelector('.jk-eligibility').style.display = 'none';
+}
+
+// Add helper function for calculating months between dates
+function calculateMonthsBetween(startDate, endDate) {
+    let months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+    months += endDate.getMonth() - startDate.getMonth();
+    
+    // Adjust for day of month
+    if (endDate.getDate() < startDate.getDate()) {
+        months--;
+    }
+    
+    return Math.max(0, months);
+}
+
+// Add this to your existing tab switching logic
+function handleTabSwitch(tabId) {
+    // ...existing tab switching code...
+    
+    // Update result label based on active tab
+    const resultLabel = document.querySelector('.result-label');
+    if (tabId === 'time-between-tab') {
+        resultLabel.textContent = 'Time Between';
+    } else {
+        resultLabel.textContent = 'Age';
+    }
+    
+    // Update visibility of category and JK eligibility
+    const categoryDiv = document.querySelector('.category');
+    const jkDiv = document.querySelector('.jk-eligibility');
+    
+    if (tabId === 'time-between-tab') {
+        categoryDiv.style.display = 'none';
+        jkDiv.style.display = 'none';
+    } else {
+        categoryDiv.style.display = 'block';
+        jkDiv.style.display = 'block';
+    }
+}
+
+// Add event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Time Between tab input listeners
+    document.getElementById('startYearInput').addEventListener('keydown', handleStartYearInput);
+    document.getElementById('startMonthInput').addEventListener('keydown', handleStartMonthInput);
+    document.getElementById('startDayInput').addEventListener('keydown', handleStartDayInput);
+    document.getElementById('endYearInput').addEventListener('keydown', handleEndYearInput);
+    document.getElementById('endMonthInput').addEventListener('keydown', handleEndMonthInput);
+    document.getElementById('endDayInput').addEventListener('keydown', handleEndDayInput);
+});
+
 // Event listeners
 document.getElementById('yearInput').addEventListener('keydown', handleYearInput);
 document.getElementById('yearInput').addEventListener('input', handleYearInput);
@@ -371,6 +840,13 @@ document.getElementById('dayInput').addEventListener('keydown', handleDayInput);
 document.getElementById('dayInput').addEventListener('blur', confirmDayInput);
 document.getElementById('datePicker').addEventListener('change', handleDatePickerChange);
 
+// Add event listeners for start date handling
+document.getElementById('startYearInput').addEventListener('keydown', handleStartYearInput);
+document.getElementById('startMonthInput').addEventListener('keydown', handleStartMonthInput);
+document.getElementById('startDayInput').addEventListener('keydown', handleStartDayInput);
+document.getElementById('endYearInput').addEventListener('keydown', handleEndYearInput);
+// ... add similar listeners for endMonth and endDay inputs
+
 // Tab switching
 document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => switchTab(button.dataset.tab));
@@ -378,3 +854,90 @@ document.querySelectorAll('.tab-button').forEach(button => {
 
 // Initialize
 switchTab('manual');
+
+// Add confirmation functions for start date inputs
+function confirmStartMonthInput() {
+    let input = document.getElementById('startMonthInput');
+    let selectedOption = document.querySelector('#startMonths option');
+    if (selectedOption) {
+        input.value = selectedOption.value;
+        updateStartDayOptions();
+        calculateTimeBetween();
+    }
+}
+
+function confirmEndMonthInput() {
+    let input = document.getElementById('endMonthInput');
+    let selectedOption = document.querySelector('#endMonths option');
+    if (selectedOption) {
+        input.value = selectedOption.value;
+        updateEndDayOptions();
+        calculateTimeBetween();
+    }
+}
+
+// Add handler for end month input
+function handleEndMonthInput(event) {
+    let input = document.getElementById('endMonthInput');
+    let value = input.value.toLowerCase();
+
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+        updateEndMonthOptions(value);
+        debouncedTimeBetweenUpdate();
+        return;
+    }
+
+    if (event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault();
+        if (input.value) {
+            confirmEndMonthInput();
+            if (event.key === 'Tab') {
+                document.getElementById('endDayInput').focus();
+            } else if (event.key === 'Enter') {
+                document.getElementById('endDayInput').focus();
+            }
+        }
+        return;
+    }
+
+    updateEndMonthOptions(value);
+    debouncedTimeBetweenUpdate();
+}
+
+// Update event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Add blur event listeners for month inputs
+    document.getElementById('startMonthInput').addEventListener('blur', confirmStartMonthInput);
+    document.getElementById('endMonthInput').addEventListener('blur', confirmEndMonthInput);
+    
+    // Add input event listeners for month inputs
+    document.getElementById('startMonthInput').addEventListener('input', function(event) {
+        updateStartMonthOptions(event.target.value);
+    });
+    document.getElementById('endMonthInput').addEventListener('input', function(event) {
+        updateEndMonthOptions(event.target.value);
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing event listeners...
+    
+    // Add tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab') + '-tab';
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab
+            this.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            // Handle tab-specific changes
+            handleTabSwitch(tabId);
+        });
+    });
+});
