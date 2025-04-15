@@ -4,54 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Age Category Calculator</title>
-    <!-- Add favicon -->
-    <link rel="icon" type="image/png" href="calicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="icon" type="image/png" href="calicon.png"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> </head>
 <body>
     <div class="container">
         <div class="app-header">
-            <h1><img src="calicon.png" alt="Calculator Icon" class="section-icon"> Age Category Calculator</h1>
+            <h1>
+                <img src="calicon.png" alt="Calculator Icon" class="section-icon">
+                Age Category Calculator
+            </h1>
             <div class="title-divider"></div>
         </div>
-        
-        <div class="tabs">
-            <button class="tab-button active" data-tab="manual">
+
+        <div class="tabs" role="tablist" aria-label="Input Mode Tabs">
+            <button class="tab-button active" data-tab="manual" role="tab" aria-selected="true" aria-controls="manual-tab" id="manual-tab-btn" tabindex="0">
                 <span class="tab-icon">✍️</span> Manual Input
             </button>
-            <button class="tab-button" data-tab="date-picker">
-                <span class="tab-icon">📅</span> Date Picker
-            </button>
-            <button class="tab-button" data-tab="time-between">
+            <button class="tab-button" data-tab="time-between" role="tab" aria-selected="false" aria-controls="time-between-tab" id="time-between-tab-btn" tabindex="0">
                 <span class="tab-icon">⏳</span> Time Between
             </button>
         </div>
 
-        <div class="tab-content active" id="manual-tab">
+        <div class="tab-content active" id="manual-tab" role="tabpanel" aria-labelledby="manual-tab-btn">
             <div class="input-section">
                 <div class="input-group">
                     <label for="yearInput">Year:</label>
-                    <input type="text" id="yearInput" placeholder="YYYY" maxlength="4" autocomplete="off">
+                    <input type="number" id="yearInput" placeholder="YYYY" maxlength="4" autocomplete="off" aria-label="Year of birth" min="2000" max="2099">
                 </div>
                 <div class="input-group">
                     <label for="monthInput">Month:</label>
-                    <input list="months" id="monthInput" placeholder="MMM or #" autocomplete="off">
+                    <input list="months" id="monthInput" placeholder="MMM or #" autocomplete="off" aria-label="Month of birth">
                     <datalist id="months"></datalist>
                 </div>
                 <div class="input-group">
                     <label for="dayInput">Day:</label>
-                    <input list="days" id="dayInput" placeholder="DD" maxlength="2" autocomplete="off">
+                    <input list="days" id="dayInput" placeholder="DD" maxlength="2" autocomplete="off" aria-label="Day of birth" min="1" max="31">
                     <datalist id="days"></datalist>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="date-picker-tab">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="datePicker">Date:</label>
-                    <input type="date" id="datePicker">
                 </div>
             </div>
         </div>
@@ -62,7 +50,7 @@
                     <h3>Start Date</h3>
                     <div class="input-group">
                         <label for="startYearInput">Year:</label>
-                        <input type="text" id="startYearInput" placeholder="YYYY" maxlength="4" autocomplete="off">
+                        <input type="number" id="startYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="2000" max="2099">
                     </div>
                     <div class="input-group">
                         <label for="startMonthInput">Month:</label>
@@ -80,7 +68,7 @@
                     <h3>End Date</h3>
                     <div class="input-group">
                         <label for="endYearInput">Year:</label>
-                        <input type="text" id="endYearInput" placeholder="YYYY" maxlength="4" autocomplete="off">
+                        <input type="number" id="endYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="2000" max="2099">
                     </div>
                     <div class="input-group">
                         <label for="endMonthInput">Month:</label>
@@ -97,28 +85,28 @@
         </div>
 
         <button onclick="clearAll()" class="clear-button">All Clear</button>
-        
-        <div class="results-container">
+
+        <div class="results-container" aria-live="polite">
             <div class="result">
                 <div class="result-label">Age</div>
-                <div class="result-value" id="result"></div>
+                <div class="result-value" id="result">--</div>
                 <div class="result-weeks" id="result-weeks"></div>
             </div>
             <div class="category">
                 <div class="category-label">Age Category</div>
-                <div class="category-value" id="category"></div>
+                <div class="category-value" id="category">--</div>
             </div>
             <div class="jk-eligibility">
                 <div class="jk-label">Eligible for JK (Ontario)</div>
-                <div class="jk-value" id="jk-eligibility"></div>
+                <div class="jk-value" id="jk-eligibility">--</div>
             </div>
         </div>
 
         <div class="info-drawer">
-            <button class="info-drawer-toggle" onclick="toggleInfoDrawer()">
+            <button class="info-drawer-toggle" aria-expanded="false" aria-controls="info-drawer-content">
                 ℹ️ More Information
             </button>
-            <div class="info-drawer-content">
+            <div class="info-drawer-content" id="info-drawer-content">
                 <div class="info-section">
                     <h2>How Age Categories Are Calculated</h2>
                     <ul>
@@ -127,7 +115,7 @@
                         <li><strong>Preschool:</strong> 31 to 43 months old</li>
                         <li><strong>JK (Junior Kindergarten):</strong> 44 to 55 months old</li>
                         <li><strong>SK (Senior Kindergarten):</strong> 56 to 71 months old</li>
-                        <li><strong>Aged Out:</strong> 72 months and older (over 6 years)</li>
+                        <li><strong>Aged Out (6+):</strong> 72 months and older</li>
                     </ul>
                 </div>
                 <div class="info-section">
@@ -143,6 +131,5 @@
         Created by Niall Brown - Early Childhood Vision Consultant (ECVC), with assistance from AI. MIT License.
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <script src="script.js"></script> </body>
 </html>
