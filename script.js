@@ -640,28 +640,39 @@ function determineCategory(months) {
  * @param {Date} birthday - The date of birth.
  */
 function calculateJKEligibility(birthday) {
-     if (!birthday || isNaN(birthday.getTime())) {
-         document.getElementById('jk-eligibility').innerText = '--';
-         return;
-     }
-
-    let birthYear = birthday.getFullYear();
-    let currentYear = new Date().getFullYear();
-    let eligibilityYear = birthYear + 4;
-    let jkEligibilityElement = document.getElementById('jk-eligibility');
-
-    let eligibilityText = `Eligible Sept ${eligibilityYear}`;
-
-    if (currentYear === eligibilityYear) {
-        eligibilityText += `<br><span class="jk-note">(Eligible this calendar year)</span>`;
-    } else if (currentYear + 1 === eligibilityYear) {
-        eligibilityText += `<br><span class="jk-note">(Eligible next calendar year)</span>`;
-        document.getElementById('jk-eligibility').innerHTML = '<span class="small-tag">(Eligible next calendar year)</span>';
-    } else if (currentYear > eligibilityYear) {
-         eligibilityText += `<br><span class="jk-note">(Eligibility year has passed)</span>`;
+    if (!birthday || isNaN(birthday.getTime())) {
+        document.getElementById('jk-year').innerText = '--';
+        document.getElementById('sk-year').innerText = '--';
+        document.getElementById('g1-year').innerText = '--';
+        document.getElementById('current-status').innerText = '';
+        return;
     }
 
-    jkEligibilityElement.innerHTML = eligibilityText;
+    const birthYear = birthday.getFullYear();
+    const currentYear = new Date().getFullYear();
+    const jkYear = birthYear + 4;
+    const skYear = birthYear + 5;
+    const g1Year = birthYear + 6;
+
+    // Display the fixed years
+    document.getElementById('jk-year').innerText = jkYear;
+    document.getElementById('sk-year').innerText = skYear;
+    document.getElementById('g1-year').innerText = g1Year;
+
+    // Set current status
+    const statusElement = document.getElementById('current-status');
+    
+    if (currentYear > g1Year) {
+        statusElement.innerHTML = '(Child has aged out - eligible for Grade 1+)';
+    } else if (currentYear === g1Year) {
+        statusElement.innerHTML = '(Currently eligible for Grade 1)';
+    } else if (currentYear === skYear) {
+        statusElement.innerHTML = '(Currently eligible for SK)';
+    } else if (currentYear === jkYear) {
+        statusElement.innerHTML = '(Currently eligible for JK)';
+    } else if (currentYear < jkYear) {
+        statusElement.innerHTML = '(Not yet eligible for JK)';
+    }
 }
 
 /**
@@ -672,7 +683,10 @@ function clearResult() {
     document.getElementById('result').innerText = '--';
     document.getElementById('result-weeks').innerText = '';
     document.getElementById('category').innerText = '--';
-    document.getElementById('jk-eligibility').innerText = '--';
+    document.getElementById('jk-year').innerText = '--';
+    document.getElementById('sk-year').innerText = '--';
+    document.getElementById('g1-year').innerText = '--';
+    document.getElementById('current-status').innerText = '';
 }
 
 /**
