@@ -157,6 +157,27 @@
 
     <script src="script.js"></script>
     <script>
+        // Add refresh protection
+        window.addEventListener('beforeunload', function (e) {
+            // Check if any input fields have data
+            const inputs = document.querySelectorAll('input');
+            let hasData = false;
+            
+            inputs.forEach(input => {
+                if (input.value !== '') {
+                    hasData = true;
+                }
+            });
+
+            // Only show warning if there's data
+            if (hasData) {
+                e.preventDefault();
+                e.returnValue = 'Refreshing will clear all data. Are you sure?';
+                return e.returnValue;
+            }
+        });
+
+        // Existing service worker registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('service-worker.js')
