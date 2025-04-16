@@ -350,6 +350,21 @@ document.addEventListener('DOMContentLoaded', function () {
         yearInput.addEventListener('input', () => updateDayDatalist('yearInput', 'monthInput', dayDatalistId));
         monthInput.addEventListener('input', () => updateDayDatalist('yearInput', 'monthInput', dayDatalistId));
     }
+
+    // Prevent invalid days, but allow empty input
+    const dayInput = document.getElementById('dayInput');
+    if (dayInput) {
+        dayInput.addEventListener('input', function (e) {
+            let val = e.target.value.replace(/\D/g, '');
+            if (val === '') {
+                e.target.value = '';
+                return;
+            }
+            if (parseInt(val, 10) < 1) val = '1';
+            if (parseInt(val, 10) > 31) val = '31';
+            e.target.value = val;
+        });
+    }
 });
 
 /**
@@ -641,6 +656,7 @@ function calculateJKEligibility(birthday) {
         eligibilityText += `<br><span class="jk-note">(Eligible this calendar year)</span>`;
     } else if (currentYear + 1 === eligibilityYear) {
         eligibilityText += `<br><span class="jk-note">(Eligible next calendar year)</span>`;
+        document.getElementById('jk-eligibility').innerHTML = '<span class="small-tag">(Eligible next calendar year)</span>';
     } else if (currentYear > eligibilityYear) {
          eligibilityText += `<br><span class="jk-note">(Eligibility year has passed)</span>`;
     }
@@ -823,14 +839,6 @@ if (yearInput) {
         }
     });
 }
-
-// Prevent negative days
-document.getElementById('dayInput').addEventListener('input', function (e) {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val === '' || parseInt(val, 10) < 1) val = '1';
-    if (parseInt(val, 10) > 31) val = '31';
-    e.target.value = val;
-});
 
 // ========================================================
 // == Time Between Tab Specific Functions =================
@@ -1535,3 +1543,8 @@ document.addEventListener('DOMContentLoaded', function() {
     switchTab('manual'); // Initialize with the manual tab active
     clearResult(); // Start with empty results
 });
+
+const el = document.getElementById('some-id');
+if (el) {
+    el.addEventListener('event', handler);
+}

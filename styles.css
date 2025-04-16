@@ -64,10 +64,10 @@ h1 {
 }
 
 .section-icon {
-    width: 2.5em;
-    height: 2.5em;
-    margin-right: 0.7em;
+    width: 64px;
+    height: 64px;
     vertical-align: middle;
+    margin-right: 12px;
 }
 
 .title-divider {
@@ -333,6 +333,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 2em;
     margin-bottom: 1em;
     letter-spacing: 0.01em;
+}
+
+/* Make tags like (Eligible next calendar year.) smaller */
+.small-tag {
+    color: var(--text-secondary);
+    font-size: 0.95em;
+    margin-top: 0.2em;
+    font-weight: normal;
+    font-style: normal;
+    opacity: 1;
 }
 
 /* Responsive adjustments */

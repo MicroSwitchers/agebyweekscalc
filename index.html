@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Age Category Calculator</title>
-    <link rel="icon" type="image/png" href="calicon.png"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> </head>
+    <link rel="icon" type="image/png" href="calicon-512.png"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> 
+    
+    <!-- PWA Additions -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <script type="application/json">
+        {
+            "icons": [
+                {
+                    "src": "calicon.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        }
+    </script>
+</head>
 <body>
     <div class="container">
         <div class="app-header">
             <h1>
-                <img src="calicon.png" alt="Calculator Icon" class="section-icon">
+                <img src="calicon-512.png" alt="Calculator Icon" class="section-icon" style="width:64px;height:64px;vertical-align:middle;margin-right:12px;">
                 Age Category Calculator
             </h1>
             <div class="title-divider"></div>
@@ -25,11 +42,12 @@
             </button>
         </div>
 
+        <!-- Manual Tab Content -->
         <div class="tab-content active" id="manual-tab" role="tabpanel" aria-labelledby="manual-tab-btn">
             <div class="input-section">
                 <div class="input-group">
                     <label for="yearInput">Year:</label>
-                    <input type="number" id="yearInput" placeholder="YYYY" maxlength="4" autocomplete="off" aria-label="Year of birth" min="2000" max="2099">
+                    <input type="number" id="yearInput" placeholder="YYYY" maxlength="4" autocomplete="off" aria-label="Year of birth" min="1900" max="2099">
                 </div>
                 <div class="input-group">
                     <label for="monthInput">Month:</label>
@@ -44,13 +62,14 @@
             </div>
         </div>
 
+        <!-- Time Between Tab Content -->
         <div class="tab-content" id="time-between-tab">
             <div class="input-section">
                 <div class="date-group">
                     <h3>Start Date</h3>
                     <div class="input-group">
                         <label for="startYearInput">Year:</label>
-                        <input type="number" id="startYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="2000" max="2099">
+                        <input type="number" id="startYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="1900" max="2099">
                     </div>
                     <div class="input-group">
                         <label for="startMonthInput">Month:</label>
@@ -68,7 +87,7 @@
                     <h3>End Date</h3>
                     <div class="input-group">
                         <label for="endYearInput">Year:</label>
-                        <input type="number" id="endYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="2000" max="2099">
+                        <input type="number" id="endYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="1900" max="2099">
                     </div>
                     <div class="input-group">
                         <label for="endMonthInput">Month:</label>
@@ -98,7 +117,9 @@
             </div>
             <div class="jk-eligibility">
                 <div class="jk-label">Eligible for JK (Ontario)</div>
-                <div class="jk-value" id="jk-eligibility">--</div>
+                <div class="jk-value" id="jk-eligibility">
+                    <span class="small-tag">(Eligible next calendar year)</span>
+                </div>
             </div>
         </div>
 
@@ -131,5 +152,20 @@
         Created by Niall Brown - Early Childhood Vision Consultant (ECVC), with assistance from AI. MIT License.
     </div>
 
-    <script src="script.js"></script> </body>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(function(registration) {
+                        // Registration successful
+                        // console.log('ServiceWorker registration successful:', registration);
+                    }, function(err) {
+                        // Registration failed
+                        console.warn('ServiceWorker registration failed:', err);
+                    });
+            });
+        }
+    </script>
+</body>
 </html>
