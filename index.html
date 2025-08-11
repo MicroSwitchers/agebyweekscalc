@@ -363,6 +363,7 @@
   </header>
 
   <section class="card" role="region" aria-label="Age calculator">
+    <form autocomplete="off" novalidate>
     <div class="sections">
       <!-- DOB -->
       <fieldset id="dob-fieldset">
@@ -371,7 +372,8 @@
           <div class="pair">
             <label for="dob-day">Day</label>
             <input id="dob-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
-                   placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+                   placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                   name="calc_birth_day_field">
           </div>
 
           <div class="pair combo">
@@ -379,7 +381,8 @@
             <div class="month-input-wrapper">
               <input id="dob-month" type="text" placeholder="e.g., 1 or Jan"
                      autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
-                     aria-autocomplete="list" aria-expanded="false" aria-controls="dob-suggest">
+                     aria-autocomplete="list" aria-expanded="false" aria-controls="dob-suggest"
+                     name="calc_birth_month_field">
               <span class="badge confirmed-month-badge" aria-hidden="true"></span>
             </div>
             <div id="dob-suggest" class="suggest" role="listbox" aria-hidden="true"></div>
@@ -390,8 +393,8 @@
             <div class="yeargroup">
               <div class="yearprefix" aria-hidden="true">20</div>
               <input id="dob-year-yy" class="yearyy" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
-                     placeholder="YY" autocomplete="on" autocapitalize="off" autocorrect="off" spellcheck="false"
-                     aria-label="Year (two digits)">
+                     placeholder="YY" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                     aria-label="Year (two digits)" name="calc_birth_year_field">
             </div>
           </div>
         </div>
@@ -413,14 +416,16 @@
                 <div class="pair">
                   <label for="asof-day">Day</label>
                   <input id="asof-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
-                         placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+                         placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                         name="calc_asof_day_field">
                 </div>
                 <div class="pair combo">
                   <label for="asof-month">Month (name or number)</label>
                   <div class="month-input-wrapper">
                     <input id="asof-month" type="text" placeholder="e.g., 11 or Nov"
                            autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
-                           aria-autocomplete="list" aria-expanded="false" aria-controls="asof-suggest">
+                           aria-autocomplete="list" aria-expanded="false" aria-controls="asof-suggest"
+                           name="calc_asof_month_field">
                     <span class="badge confirmed-month-badge" aria-hidden="true"></span>
                   </div>
                   <div id="asof-suggest" class="suggest" role="listbox" aria-hidden="true"></div>
@@ -430,8 +435,8 @@
                   <div class="yeargroup">
                     <div class="yearprefix" aria-hidden="true">20</div>
                     <input id="asof-year-yy" class="yearyy" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
-                           placeholder="YY" autocomplete="on" autocapitalize="off" autocorrect="off" spellcheck="false"
-                           aria-label="Year (two digits)">
+                           placeholder="YY" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                           aria-label="Year (two digits)" name="calc_asof_year_field">
                   </div>
                 </div>
               </div>
@@ -451,6 +456,7 @@
       <button id="calc" type="button" class="btn primary">Calculate</button>
       <button id="clear" type="button" class="btn secondary">Clear</button>
     </div>
+    </form>
 
     <!-- JK Eligibility Banner -->
     <div id="jk-banner" class="banner" role="status" aria-live="polite">
