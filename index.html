@@ -1,195 +1,877 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age Category Calculator</title>
-    <link rel="icon" type="image/png" href="calicon-512.png"> 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> 
-    
-    <!-- PWA Additions -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#6366f1">
-    <script type="application/json">
-        {
-            "icons": [
-                {
-                    "src": "calicon.png",
-                    "sizes": "512x512",
-                    "type": "image/png"
-                }
-            ]
-        }
-    </script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="description" content="Calculate age categories by month for ECVC. Perfect for early childhood development professionals." />
+<meta name="keywords" content="age calculator,ECVC,early childhood,development,kindergarten,JK,SK" />
+<meta name="author" content="Niall Brown - Early Childhood Vision Consultant" />
+<title>ECVC Age Category Calculator</title>
+
+<!-- PWA Manifest and Theme -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1c2128">
+
+<!-- Apple PWA Tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ECVC Calc">
+<link rel="apple-touch-icon" href="calicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="calicon-192.png">
+
+<!-- Windows PWA Tags -->
+<meta name="msapplication-TileColor" content="#1c2128">
+<meta name="msapplication-TileImage" content="calicon-192.png">
+<meta name="msapplication-config" content="browserconfig.xml">
+
+<!-- Android PWA Tags -->
+<link rel="icon" type="image/png" sizes="192x192" href="calicon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="calicon-512.png">
+<link rel="icon" type="image/png" sizes="32x32" href="calicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="calicon.png">
+
+<!-- Favicon for all platforms -->
+<link rel="shortcut icon" href="calicon.png">
+<link rel="icon" type="image/png" href="calicon.png">
+
+<meta name="color-scheme" content="dark" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* New Vibrant Palette */
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --panel: #1c2128;
+    --panel-2: #22272e;
+    --ink: #2c323a;
+    --text: #e6edf3;
+    --muted: #909dab;
+    --muted-2: #6e7681;
+
+    --accent: #a78bfa;      /* Lavender */
+    --accent-2: #2dd4bf;    /* Teal */
+    --accent-3: #fb923c;    /* Orange */
+    --accent-alert: #f472b6; /* Pink */
+    --accent-age: var(--accent);
+    --accent-cat: var(--accent-2);
+    --accent-school: var(--accent-3);
+
+    --border: #30363d;
+    --danger: #f87171;      /* Bright Red */
+
+    /* Refined Shadows */
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+
+    /* Layout / rhythm */
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+    --r1:8px; --r2:12px; --r3:16px; --r4:20px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--text); font:16px/1.55 'Inter', system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(ellipse at 20% 80%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, color-mix(in srgb, var(--accent-2) 10%, transparent) 0%, transparent 50%),
+      radial-gradient(ellipse at 40% 40%, color-mix(in srgb, var(--accent-3) 8%, transparent) 0%, transparent 60%),
+      linear-gradient(135deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 95%, var(--panel)) 100%);
+    background-attachment: fixed;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+
+  .wrap{max-width:980px; margin:0 auto; padding:var(--s7) var(--s5)}
+  header{margin-bottom:var(--s6); display:flex; gap:var(--s4); align-items:flex-start; justify-content:space-between; flex-wrap:wrap}
+  .brand{ display:flex; align-items:center; gap:var(--s4); }
+  .logo{
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    object-fit: cover;
+  }
+  .titles h1{ margin:0; font-size:clamp(24px,3.4vw,40px); letter-spacing:.2px; font-weight: 800; }
+
+  .card{
+    background: var(--panel);
+    border:1px solid var(--border); border-radius:var(--r4);
+    padding:var(--s6); box-shadow:var(--shadow-lg)
+  }
+
+  /* sections */
+  .sections{display:grid; gap:var(--s6)}
+  @media(min-width:960px){
+    .sections{
+      grid-template-columns:1.15fr .85fr;
+      align-items: start; /* Prevents left column from stretching */
+    }
+  }
+
+  fieldset{
+    margin:0; padding:var(--s5);
+    border:1px solid var(--border); border-radius:var(--r3);
+    background: transparent;
+  }
+  legend{ padding:0 var(--s2); color:var(--muted); font-size:12px; letter-spacing:.06em; text-transform:uppercase; font-weight: 700; }
+
+  .fields{
+    display:grid; gap:var(--s4);
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    align-items:end; margin-top:var(--s2)
+  }
+  .pair{display:flex; flex-direction:column; gap:6px}
+  label{font-size:12px; color:var(--muted); letter-spacing:.02em; font-weight: 700;}
+
+  input[type="text"]{
+    width:100%; height:52px; background:var(--ink); color:var(--text);
+    border:1px solid var(--border); border-radius:var(--r2);
+    padding:0 var(--s4); font-size:16px; outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .08s ease;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.1)
+  }
+  input[type="text"]::placeholder{color:var(--muted-2)}
+  input[type="text"]:focus{border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent)}
+  input[type="text"]:active{transform:translateY(1px)}
+  .help{font-size:12px; color:var(--muted); margin-top:var(--s2)}
+
+  /* 20 + YY year */
+  .yeargroup{display:flex; align-items:center; gap:10px}
+  .yearprefix{
+    flex:0 0 auto; height:52px; min-width:64px;
+    display:flex; align-items:center; justify-content:center;
+    padding:0 12px; border:1px solid var(--border); border-radius:var(--r2);
+    background: var(--panel-2);
+    font-weight:800; color:var(--muted); letter-spacing:.6px
+  }
+  .yearyy{width:110px}
+
+  /* actions */
+  .actions{display:flex; gap:var(--s3); flex-wrap:wrap; margin-top:var(--s6)}
+  .btn{
+    height:52px; padding:0 var(--s7);
+    border:0; border-radius:var(--r2); cursor:pointer; font-weight:800; font-size:16px;
+    transition:transform .15s ease, filter .2s ease, box-shadow .2s ease, background-color .2s ease;
+    letter-spacing:.2px;
+  }
+  .btn.primary{ color:#110c1f; background-color: var(--accent); box-shadow: 0 4px 14px 0 color-mix(in srgb, var(--accent) 35%, transparent); }
+  .btn.primary:hover{filter:brightness(1.1); box-shadow: 0 6px 20px 0 color-mix(in srgb, var(--accent) 40%, transparent);}
+  .btn.primary:active{transform:translateY(1px)}
+  .btn.secondary{ color:var(--text); background-color:var(--panel-2); border:1px solid var(--border) }
+  .btn.secondary:hover{ background-color: var(--ink); }
+
+  /* result tiles */
+  .result{ display:grid; gap:var(--s4); margin-top:var(--s6); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) }
+  .tile{ position:relative; overflow:hidden; border:1px solid var(--border); border-radius:var(--r3); padding:var(--s5) }
+  .tile::before{ content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); opacity:.95 }
+  .tile .row{display:flex; align-items:center; gap:12px}
+  .ico{ flex:0 0 36px; width:36px; aspect-ratio:1 / 1; height:auto; border-radius:10px; display:grid; place-items:center; background:var(--panel); border:1px solid var(--border) }
+  .big{font-size:clamp(24px,3.8vw,38px); font-weight:900; letter-spacing:.2px}
+  .muted{color:var(--muted); font-weight: 700;}
+  .metric{margin-top:6px}
+  /* Align icons to top of the first line of text */
+  .tile .row{align-items:flex-start}
+  .tile .row .ico{align-self:flex-start}
+  .age-sub{margin-top:2px; font-size:17px; color:var(--muted)}
+  /* Smaller range note for Age Category */
+  #age-cat-why{font-size:17px; opacity:.95}
+
+  /* School years emphasis */
+  #school-years{display:flex; flex-direction:column; gap:4px}
+  .jk-emph{color:var(--accent-school)}
+  .school-rest{font-size:17px; color:var(--muted)}
+
+  .error{ display:none; color:#fff; background:color-mix(in srgb, var(--danger) 20%, var(--bg)); border:1px solid color-mix(in srgb, var(--danger) 50%, transparent); border-left: 4px solid var(--danger); padding:var(--s3) var(--s4); border-radius:12px; margin-top:var(--s4) }
+
+  /* Variant colors for result tiles */
+  .tile.is-age{ background: color-mix(in srgb, var(--accent-age) 5%, var(--panel-2)); }
+  .tile.is-cat{ background: color-mix(in srgb, var(--accent-cat) 5%, var(--panel-2)); }
+  .tile.is-school{ background: color-mix(in srgb, var(--accent-school) 5%, var(--panel-2)); }
+  .tile.is-age::before{background:linear-gradient(90deg, var(--accent-age), color-mix(in oklab, var(--accent-age) 70%, white));}
+  .tile.is-cat::before{background:linear-gradient(90deg, var(--accent-cat), color-mix(in oklab, var(--accent-cat) 70%, white));}
+  .tile.is-school::before{background:linear-gradient(90deg, var(--accent-school), color-mix(in oklab, var(--accent-school) 70%, white));}
+  .tile.is-age .big{color:var(--accent-age)}
+  .tile.is-cat .big{color:var(--accent-cat)}
+  .tile.is-school .jk-emph{color:var(--accent-school)}
+  .tile.is-age .ico{color:var(--accent-age); border-color:color-mix(in oklab, var(--accent-age) 45%, var(--border)); background:linear-gradient(180deg, color-mix(in oklab, var(--accent-age) 10%, transparent), rgba(0,0,0,.06));}
+  .tile.is-cat .ico{color:var(--accent-cat); border-color:color-mix(in oklab, var(--accent-cat) 45%, var(--border)); background:linear-gradient(180deg, color-mix(in oklab, var(--accent-cat) 10%, transparent), rgba(0,0,0,.06));}
+  .tile.is-school .ico{color:var(--accent-school); border-color:color-mix(in oklab, var(--accent-school) 45%, var(--border)); background:linear-gradient(180deg, color-mix(in oklab, var(--accent-school) 10%, transparent), rgba(0,0,0,.06));}
+
+  /* Rollover animations */
+  .tile{transition:transform .16s ease, box-shadow .2s ease, border-color .2s ease}
+  .tile:hover{transform:translateY(-4px); box-shadow: 0 0 25px color-mix(in srgb, var(--border) 80%, transparent); border-color:color-mix(in oklab, var(--accent) 30%, var(--border))}
+  .ico{transition:transform .18s ease}
+  .tile:hover .ico{transform:scale(1.08) rotate(-5deg)}
+  .drawer summary{transition:filter .2s ease, background .2s ease}
+  .drawer summary:hover{filter:brightness(1.1)}
+  input[type="text"]:hover{border-color:color-mix(in oklab, var(--accent) 40%, var(--border))}
+  .opt{transition:background .12s ease, transform .12s ease}
+  .opt:hover{transform:translateX(3px)}
+
+  /* Kindergarten eligibility banner */
+  .banner{
+    display:none;
+    align-items:center;
+    gap: var(--s4);
+    margin-top: var(--s5);
+    padding: var(--s4);
+    border-radius: var(--r3);
+    background: linear-gradient(135deg, var(--panel), var(--panel-2));
+    box-shadow: var(--shadow-md);
+    border-left: 5px solid;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .banner.show{display:flex; animation:slidein .4s ease-out, pulse 1.5s infinite 2s;}
+  .banner .icon{
+    flex:0 0 40px;
+    width:40px;
+    height: 40px;
+    aspect-ratio:1 / 1;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background: var(--panel);
+    border: 2px solid;
+  }
+  .banner .icon svg { width: 22px; height: 22px; }
+  .banner .content{flex:1 1 auto; line-height: 1.4;}
+  .banner .close{
+    appearance:none;
+    background:none;
+    border:0;
+    color:var(--muted);
+    font-size:24px;
+    line-height:1;
+    padding:var(--s1) var(--s2);
+    cursor:pointer;
+    border-radius:8px;
+    align-self: flex-start;
+  }
+  .banner .close:hover{background:rgba(255,255,255,.1); color:var(--text)}
+
+  .banner.next, .banner.this {
+    border-color: var(--accent-alert);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent-alert) 8%, var(--panel)), color-mix(in srgb, var(--accent-alert) 5%, var(--panel-2)));
+  }
+  .banner.next .icon, .banner.this .icon {
+    color: var(--accent-alert);
+    border-color: var(--accent-alert);
+  }
+
+  @keyframes slidein{from{transform:translateY(-15px); opacity:0} to{transform:translateY(0); opacity:1}}
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--border-color) 50%, transparent); }
+    70% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--border-color) 0%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--border-color) 0%, transparent); }
+  }
+  .banner.next, .banner.this { --border-color: var(--accent-alert); }
+
+
+  /* month combo */
+  .combo{position:relative}
+
+  .month-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .month-input-wrapper input {
+    padding-right: var(--s6); /* Make space for the badge */
+  }
+  .confirmed-month-badge {
+    position: absolute;
+    right: var(--s3);
+    pointer-events: none;
+    color: var(--accent);
+    font-weight: 700;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0;
+    transform: scale(0.8);
+    display: none; /* Hide by default */
+  }
+  .confirmed-month-badge.visible {
+    display: inline-block;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .suggest{
+    position:absolute; left:0; right:0; top:calc(100% + var(--s2));
+    background:color-mix(in srgb, var(--panel) 85%, transparent);
+    border:1px solid var(--border); border-radius:var(--r2);
+    box-shadow:var(--shadow-md);
+    display:none; max-height:min(50vh, 320px); overflow:auto; z-index:70;
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  }
+  .suggest[aria-hidden="false"]{display:block}
+  .opt{ padding:12px 14px; cursor:pointer; font-size:14px; display:flex; justify-content:space-between; gap:10px; align-items:center; }
+  .opt[aria-selected="true"], .opt:hover{background:color-mix(in srgb, var(--accent) 15%, transparent)}
+  .badge{ font-size:12px; color:var(--muted); padding:2px 8px; border:1px solid var(--border); border-radius:999px; background:var(--panel-2) }
+  .badge.hit{border-color:var(--accent); color:var(--accent); font-weight:700}
+  mark{background:color-mix(in srgb, var(--accent) 30%, transparent); color:inherit; padding:0 2px; border-radius:4px}
+
+  /* drawer(s) */
+  .drawer{border:1px solid var(--border); border-radius:var(--r3); padding:var(--s4)}
+  .drawer summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:var(--s4); color:var(--text); font-weight:800}
+  .drawer summary::-webkit-details-marker{display:none}
+  .chev{flex:0 0 auto; width:14px; height:14px; border:2px solid var(--muted); border-left:0; border-top:0; transform:rotate(-45deg); transition:transform .2s, border-color .2s}
+  details[open] .chev{transform:rotate(45deg); border-color:var(--accent)}
+  .drawer .hint{color:var(--muted); font-size:13px}
+  .chip{margin-left:auto; font-size:12px; color:var(--accent); padding:4px 10px; border:1px solid color-mix(in oklab, var(--accent) 50%, var(--border)); border-radius:999px; background:var(--panel-2); }
+
+  .footer{margin-top:var(--s6); color:var(--muted); font-size:12px; text-align: center;}
+  .kbd{background:var(--ink); border:1px solid var(--border); border-bottom-width:3px; border-radius:6px; padding:0 6px; font-weight:800}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+  /* Responsive tweaks */
+  @media (max-width: 900px){ .wrap{padding:var(--s6) var(--s4)} .card{padding:var(--s5)} }
+  @media (max-width: 720px){
+    header{margin-bottom:var(--s5)}
+    .fields{grid-template-columns:repeat(2, minmax(0, 1fr))}
+    input[type="text"], .yearprefix{height:48px}
+    .yearyy{width:100%; max-width:120px}
+    .actions{gap:var(--s2)}
+    .btn{flex:1 1 100%}
+    .result{grid-template-columns:1fr; gap:var(--s3)}
+    .tile{padding:var(--s4)}
+    .big{font-size:clamp(22px,7vw,34px)}
+    .drawer summary{flex-wrap:wrap; gap:var(--s3)}
+    .chip{margin-left:0; margin-top:6px}
+  }
+  @media (max-width: 420px){
+    .wrap{padding:var(--s5) var(--s3)}
+    .brand{gap:var(--s3)}
+    .logo{width:36px; height:36px; border-radius:10px}
+    .fields{grid-template-columns:1fr}
+    .yearyy{max-width:96px}
+    .titles h1{font-size:clamp(20px,8vw,28px)}
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="app-header">
-            <h1>
-                <img src="calicon-512.png" alt="Calculator Icon" class="section-icon" style="width:64px;height:64px;vertical-align:middle;margin-right:12px;">
-                Age Category Calculator
-            </h1>
-            <div class="title-divider"></div>
-        </div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img src="calicon.png" alt="ECVC Logo" class="logo">
+      <div class="titles">
+        <h1>ECVC Age Category Calculator</h1>
+      </div>
+    </div>
+  </header>
 
-        <div class="tabs" role="tablist" aria-label="Input Mode Tabs">
-            <button class="tab-button active" data-tab="manual" role="tab" aria-selected="true" aria-controls="manual-tab" id="manual-tab-btn" tabindex="0">
-                <span class="tab-icon">✍️</span> Manual Input
-            </button>
-            <button class="tab-button" data-tab="time-between" role="tab" aria-selected="false" aria-controls="time-between-tab" id="time-between-tab-btn" tabindex="0">
-                <span class="tab-icon">⏳</span> Time Between
-            </button>
-        </div>
+  <section class="card" role="region" aria-label="Age calculator">
+    <div class="sections">
+      <!-- DOB -->
+      <fieldset id="dob-fieldset">
+        <legend>Date of Birth</legend>
+        <div class="fields">
+          <div class="pair">
+            <label for="dob-day">Day</label>
+            <input id="dob-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
+                   placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+          </div>
 
-        <!-- Manual Tab Content -->
-        <div class="tab-content active" id="manual-tab" role="tabpanel" aria-labelledby="manual-tab-btn">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="yearInput">Year:</label>
-                    <input type="number" id="yearInput" placeholder="YYYY" maxlength="4" autocomplete="off" aria-label="Year of birth" min="1900" max="2099">
-                </div>
-                <div class="input-group">
-                    <label for="monthInput">Month:</label>
-                    <input list="months" id="monthInput" placeholder="MMM or #" autocomplete="off" aria-label="Month of birth">
-                    <datalist id="months"></datalist>
-                </div>
-                <div class="input-group">
-                    <label for="dayInput">Day:</label>
-                    <input list="days" id="dayInput" placeholder="DD" maxlength="2" autocomplete="off" aria-label="Day of birth" min="1" max="31">
-                    <datalist id="days"></datalist>
-                </div>
+          <div class="pair combo">
+            <label for="dob-month">Month (name or number)</label>
+            <div class="month-input-wrapper">
+              <input id="dob-month" type="text" placeholder="e.g., 1 or Jan"
+                     autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                     aria-autocomplete="list" aria-expanded="false" aria-controls="dob-suggest">
+              <span class="badge confirmed-month-badge" aria-hidden="true"></span>
             </div>
+            <div id="dob-suggest" class="suggest" role="listbox" aria-hidden="true"></div>
+          </div>
+
+          <div class="pair">
+            <label for="dob-year-yy">Year</label>
+            <div class="yeargroup">
+              <div class="yearprefix" aria-hidden="true">20</div>
+              <input id="dob-year-yy" class="yearyy" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
+                     placeholder="YY" autocomplete="on" autocapitalize="off" autocorrect="off" spellcheck="false"
+                     aria-label="Year (two digits)">
+            </div>
+          </div>
         </div>
+      </fieldset>
 
-        <!-- Time Between Tab Content -->
-        <div class="tab-content" id="time-between-tab">
-            <div class="input-section">
-                <div class="date-group">
-                    <h3>Start Date</h3>
-                    <div class="input-group">
-                        <label for="startYearInput">Year:</label>
-                        <input type="number" id="startYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="1900" max="2099">
-                    </div>
-                    <div class="input-group">
-                        <label for="startMonthInput">Month:</label>
-                        <input list="startMonths" id="startMonthInput" placeholder="MMM or #" autocomplete="off">
-                        <datalist id="startMonths"></datalist>
-                    </div>
-                    <div class="input-group">
-                        <label for="startDayInput">Day:</label>
-                        <input list="startDays" id="startDayInput" placeholder="DD" maxlength="2" autocomplete="off">
-                        <datalist id="startDays"></datalist>
-                    </div>
+      <!-- As-of Drawer -->
+      <div>
+        <details id="asof-drawer" class="drawer">
+          <summary>
+            <span class="chev" aria-hidden="true"></span>
+            Use a custom “As of” date
+            <span class="hint">Default is <span id="today-label"></span></span>
+            <span id="asof-chip" class="chip">Today</span>
+          </summary>
+          <div style="margin-top:var(--s4)">
+            <fieldset id="asof-fieldset" aria-describedby="asof-hint">
+              <legend>As of</legend>
+              <div class="fields">
+                <div class="pair">
+                  <label for="asof-day">Day</label>
+                  <input id="asof-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
+                         placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
                 </div>
+                <div class="pair combo">
+                  <label for="asof-month">Month (name or number)</label>
+                  <div class="month-input-wrapper">
+                    <input id="asof-month" type="text" placeholder="e.g., 11 or Nov"
+                           autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                           aria-autocomplete="list" aria-expanded="false" aria-controls="asof-suggest">
+                    <span class="badge confirmed-month-badge" aria-hidden="true"></span>
+                  </div>
+                  <div id="asof-suggest" class="suggest" role="listbox" aria-hidden="true"></div>
+                </div>
+                <div class="pair">
+                  <label for="asof-year-yy">Year</label>
+                  <div class="yeargroup">
+                    <div class="yearprefix" aria-hidden="true">20</div>
+                    <input id="asof-year-yy" class="yearyy" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
+                           placeholder="YY" autocomplete="on" autocapitalize="off" autocorrect="off" spellcheck="false"
+                           aria-label="Year (two digits)">
+                  </div>
+                </div>
+              </div>
+              <div id="asof-hint" class="help">Close the drawer to switch back to using today.</div>
+            </fieldset>
+          </div>
+        </details>
 
-                <div class="date-group">
-                    <h3>End Date</h3>
-                    <div class="input-group">
-                        <label for="endYearInput">Year:</label>
-                        <input type="number" id="endYearInput" placeholder="YYYY" maxlength="4" autocomplete="off" min="1900" max="2099">
-                    </div>
-                    <div class="input-group">
-                        <label for="endMonthInput">Month:</label>
-                        <input list="endMonths" id="endMonthInput" placeholder="MMM or #" autocomplete="off">
-                        <datalist id="endMonths"></datalist>
-                    </div>
-                    <div class="input-group">
-                        <label for="endDayInput">Day:</label>
-                        <input list="endDays" id="endDayInput" placeholder="DD" maxlength="2" autocomplete="off">
-                        <datalist id="endDays"></datalist>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <button onclick="clearAll()" class="clear-button">All Clear</button>
-
-        <div class="results-container" aria-live="polite">
-            <div class="result">
-                <div class="result-label">Age</div>
-                <div class="result-value" id="result">--</div>
-                <div class="result-weeks" id="result-weeks"></div>
-            </div>
-            <div class="category">
-                <div class="category-label">Age Category</div>
-                <div class="category-value" id="category">--</div>
-            </div>
-            <div class="jk-eligibility">
-                <div class="jk-label">School Entry Years (Ontario)</div>
-                <div class="jk-value" id="jk-eligibility">
-                    <div>JK: September <span id="jk-year">--</span></div>
-                    <div>SK: September <span id="sk-year">--</span></div>
-                    <div>Grade 1: September <span id="g1-year">--</span></div>
-                    <div class="small-tag" id="current-status"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="info-drawer">
-            <button class="info-drawer-toggle" aria-expanded="false" aria-controls="info-drawer-content">
-                ℹ️ More Information
-            </button>
-            <div class="info-drawer-content" id="info-drawer-content">
-                <div class="info-section">
-                    <h2>How Age Categories Are Calculated</h2>
-                    <ul>
-                        <li><strong>Infant:</strong> 0 to 17 months old</li>
-                        <li><strong>Toddler:</strong> 18 to 30 months old</li>
-                        <li><strong>Preschool:</strong> 31 to 43 months old</li>
-                        <li><strong>JK (Junior Kindergarten):</strong> 44 to 55 months old</li>
-                        <li><strong>SK (Senior Kindergarten):</strong> 56 to 71 months old</li>
-                        <li><strong>Aged Out (6+):</strong> 72 months and older</li>
-                    </ul>
-                </div>
-                <div class="info-section">
-                    <h2>JK Eligibility in Ontario</h2>
-                    <p>In Ontario, children are eligible to start Junior Kindergarten (JK) in September of the year they turn 4 years old. For example, if a child turns 4 anytime in 2023 (even if their birthday is in December), they are eligible to start JK in September 2023.</p>
-                    <p>This system allows children to start school as young as 3 years and 8 months, or as old as 4 years and 8 months when they begin JK in September.</p>
-                </div>
-            </div>
-        </div>
+        <!-- Note near the drawer -->
+        <p id="asof-note" class="help" style="margin:.5rem 0 0">
+          By default, results are calculated up to <strong>today</strong>. Open the drawer above to choose a custom “As of” date; close it to revert to today.
+        </p>
+      </div>
     </div>
 
-    <div class="credit">
-        Created by Niall Brown - Early Childhood Vision Consultant (ECVC), with assistance from AI. MIT License.
+    <div class="actions">
+      <button id="calc" type="button" class="btn primary">Calculate</button>
+      <button id="clear" type="button" class="btn secondary">Clear</button>
     </div>
 
-    <script src="script.js"></script>
-    <script>
-        // Add refresh protection
-        window.addEventListener('beforeunload', function (e) {
-            // Check if any input fields have data
-            const inputs = document.querySelectorAll('input');
-            let hasData = false;
-            
-            inputs.forEach(input => {
-                if (input.value !== '') {
-                    hasData = true;
-                }
-            });
+    <!-- JK Eligibility Banner -->
+    <div id="jk-banner" class="banner" role="status" aria-live="polite">
+      <div class="icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+        </svg>
+      </div>
+      <div class="content" id="jk-banner-content"></div>
+      <button class="close" type="button" aria-label="Dismiss">&times;</button>
+    </div>
 
-            // Only show warning if there's data
-            if (hasData) {
-                e.preventDefault();
-                e.returnValue = 'Refreshing will clear all data. Are you sure?';
-                return e.returnValue;
-            }
-        });
+    <div id="alert" class="error" role="alert"></div>
 
-        // Existing service worker registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(function(registration) {
-                        // Registration successful
-                        // console.log('ServiceWorker registration successful:', registration);
-                    }, function(err) {
-                        // Registration failed
-                        console.warn('ServiceWorker registration failed:', err);
-                    });
-            });
+    <div id="result" class="result" aria-live="polite" aria-atomic="true">
+      <div class="tile is-age">
+        <div class="row">
+          <div class="ico" aria-hidden="true">
+            <!-- calendar icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="3" stroke="currentColor" opacity=".7"/>
+              <path d="M7 2v4M17 2v4M3 10h18" stroke="currentColor" opacity=".7"/>
+            </svg>
+          </div>
+          <div>
+            <div class="muted">Age</div>
+            <div class="big metric" id="age-ym">—</div>
+            <div class="age-sub" id="age-total-months">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tile is-cat">
+        <div class="row">
+          <div class="ico" aria-hidden="true">
+            <!-- tag icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 11l-8.2 8.2a2 2 0 0 1-2.8 0L3 12.2V3h9.2L21 11z" stroke="currentColor" opacity=".7"/>
+              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" opacity=".7"/>
+            </svg>
+          </div>
+          <div>
+            <div class="muted">Age Category</div>
+            <div class="big metric" id="age-cat">—</div>
+            <div class="age-sub" id="age-cat-why">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tile is-school">
+        <div class="row">
+          <div class="ico" aria-hidden="true">
+            <!-- school icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3l10 5-10 5L2 8l10-5Z" stroke="currentColor" opacity=".7"/>
+              <path d="M22 13v5l-10 5-10-5v-5" stroke="currentColor" opacity=".7"/>
+            </svg>
+          </div>
+          <div>
+            <div class="muted">School Entry Years (Ontario)</div>
+            <div id="school-years">
+              <div class="big metric jk-emph" id="school-jk">—</div>
+              <div class="school-rest" id="school-rest">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info drawer -->
+    <details class="drawer" style="margin-top:var(--s6)">
+      <summary><span class="chev" aria-hidden="true"></span> More Information</summary>
+      <div style="margin-top:var(--s4); color:var(--muted); font-size:14px">
+        <h3 style="margin:.5rem 0 0; font-size:16px; color:var(--text); font-weight: 700;">How Age Categories Are Calculated</h3>
+        <ul style="margin:.5rem 0 1rem 1.25rem; line-height: 1.8;">
+          <li>Infant: <strong>0 to 17 months old</strong></li>
+          <li>Toddler: <strong>18 to 30 months old</strong></li>
+          <li>Preschool: <strong>31 to 43 months old</strong></li>
+          <li>JK (Junior Kindergarten): <strong>44 to 55 months old</strong></li>
+          <li>SK (Senior Kindergarten): <strong>56 to 71 months old</strong></li>
+          <li>Aged Out (6+): <strong>72 months and older</strong></li>
+        </ul>
+        <h3 style="margin:.5rem 0 0; font-size:16px; color:var(--text); font-weight: 700;">JK Eligibility in Ontario</h3>
+        <p>In Ontario, children are eligible to start Junior Kindergarten (JK) in September of the year they turn 4 years old. For example, if a child turns 4 anytime in 2023 (even if their birthday is in December), they are eligible to start JK in September 2023.</p>
+        <p>This system allows children to start school as young as 3 years and 8 months, or as old as 4 years and 8 months when they begin JK in September.</p>
+      </div>
+    </details>
+
+    </section>
+<footer class="footer" aria-label="Attribution">Created by Niall Brown - Early Childhood Vision Consultant (ECVC), with assistance from AI. MIT License.</footer>
+</div>
+
+<script>
+// --- PWA & Privacy Setup ---
+// This app is 100% client-side. No data is saved or transmitted.
+// The service worker below is only for caching the app files for offline use.
+// For the PWA to be installable, the icon files (calicon.png, calicon-192.png, calicon-512.png)
+// must be in the same directory as this HTML file.
+// Register static service worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(registration) {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, function(error) {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}
+
+
+// --- App Logic ---
+(() => {
+  const $  = (s, c=document)=>c.querySelector(s);
+  const $$ = (s, c=document)=>Array.from(c.querySelectorAll(s));
+
+  /* Today label */
+  const fmtFull = (y,m,d)=> new Date(y, m-1, d).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  const t0 = new Date(); $('#today-label').textContent = fmtFull(t0.getFullYear(), t0.getMonth()+1, t0.getDate());
+
+  /* Month parsing with smart numeric prefixes */
+  const MONTHS = [ null,"January","February","March","April","May","June","July","August","September","October","November","December" ];
+  const ALIASES = { jan:1,feb:2,mar:3,apr:4,may:5,jun:6,june:6,jul:7,july:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12 };
+  const norm = s => (s||"").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+  const esc  = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const range = (a,b)=>Array.from({length:b-a+1}, (_,i)=>a+i);
+
+  function parseMonthFlexible(raw){
+    if (!raw) return {ok:false};
+    const s = norm(raw);
+
+    if (/^\d+$/.test(s)) {
+      const n = parseInt(s,10);
+      if (s === '0') return {ok:false, ambiguous:true, options: range(1,9).map(i=>({num:i, name:MONTHS[i], hit:true}))};
+      if (s === '1') return {ok:false, ambiguous:true, options: [1,10,11,12].map(i=>({num:i, name:MONTHS[i], hit:true}))};
+      if (s.length === 1 && n >= 2 && n <= 9) return {ok:true, num:n, name:MONTHS[n], via:"number", hit:true};
+      if (s.length === 2 && n >= 1 && n <= 12) return {ok:true, num:n, name:MONTHS[n], via:"number", hit:true};
+      return {ok:false};
+    }
+    if (s in ALIASES) return {ok:true, num:ALIASES[s], name:MONTHS[ALIASES[s]], via:"alias"};
+    const idxFull = MONTHS.findIndex(m => m && m.toLowerCase() === s);
+    if (idxFull > 0) return {ok:true, num:idxFull, name:MONTHS[idxFull], via:"name"};
+    if (s.length >= 2) {
+      const matches = [];
+      for (let i=1;i<=12;i++) if (MONTHS[i].toLowerCase().startsWith(s)) matches.push(i);
+      if (matches.length === 1) return {ok:true, num:matches[0], name:MONTHS[matches[0]], via:"prefix"};
+      if (matches.length > 1) return {ok:false, ambiguous:true, options:matches.map(i=>({num:i, name:MONTHS[i]}))};
+    }
+    return {ok:false};
+  }
+
+  function attachMonthCombo(inputEl, listEl){
+    let open=false, idx=-1, options=[], lastQuery='';
+    const wrapper = inputEl.closest('.month-input-wrapper');
+    const confirmedBadge = wrapper.querySelector('.confirmed-month-badge');
+
+    const highlight = (name, q)=>{ const s = norm(q); if (!s || /^\d+$/.test(s)) return name; const rx = new RegExp('^(' + esc(s) + ')', 'i'); return name.replace(rx, '<mark>$1</mark>'); };
+
+    function render(opts){
+      options = opts.slice(0,8); listEl.innerHTML='';
+      options.forEach((o,i)=>{
+        const li=document.createElement('div'); li.className='opt'; li.setAttribute('role','option');
+        li.dataset.num=String(o.num);
+        li.innerHTML = `<span>${highlight(o.name, lastQuery)}</span><span class="badge ${o.hit?'hit':''}">${o.num}</span>`;
+        if (i===idx) li.setAttribute('aria-selected','true');
+        li.addEventListener('mousedown', e=>{ e.preventDefault(); choose(i); });
+        listEl.appendChild(li);
+      });
+      listEl.setAttribute('aria-hidden', options.length?'false':'true');
+      inputEl.setAttribute('aria-expanded', options.length?'true':'false');
+      open = !!options.length;
+    }
+    function choose(i){
+      const sel=options[i];
+      if(!sel) return;
+      inputEl.value = sel.name;
+      inputEl.dataset.monthNum = String(sel.num);
+      confirmedBadge.textContent = sel.num;
+      confirmedBadge.classList.add('visible');
+      close();
+      inputEl.dispatchEvent(new Event('blur',{bubbles:false}));
+    }
+    function close(){ idx=-1; options=[]; render([]); }
+
+    inputEl.addEventListener('input', ()=>{
+      inputEl.dataset.monthNum='';
+      confirmedBadge.classList.remove('visible');
+      const v=inputEl.value.trim();
+      lastQuery=v;
+      if (!v){ close(); return; }
+      const p=parseMonthFlexible(v);
+      if (p.ok){ idx=0; render([{num:p.num,name:p.name,hit:p.hit}]); }
+      else if (p.ambiguous){ idx=0; render(p.options); }
+      else { const s=norm(v), loose=[]; for (let i=1;i<=12;i++){ const n=MONTHS[i].toLowerCase(); if (n.includes(s)) loose.push({num:i,name:MONTHS[i]}); } idx=loose.length?0:-1; render(loose); }
+    });
+    inputEl.addEventListener('blur', ()=>{
+      const p = parseMonthFlexible(inputEl.value);
+      if (p.ok){
+        inputEl.value = p.name;
+        inputEl.dataset.monthNum = String(p.num);
+        confirmedBadge.textContent = p.num;
+        confirmedBadge.classList.add('visible');
+      } else {
+        if(inputEl.value === '') {
+            confirmedBadge.classList.remove('visible');
         }
-    </script>
+      }
+      setTimeout(close,100);
+    });
+    inputEl.addEventListener('focus', ()=> {
+        if (inputEl.dataset.monthNum) {
+            inputEl.value = MONTHS[parseInt(inputEl.dataset.monthNum, 10)];
+        }
+        confirmedBadge.classList.remove('visible');
+        inputEl.select();
+    }, {passive:true});
+    inputEl.addEventListener('keydown', e=>{ if(!open) return; if (e.key==='ArrowDown'){ e.preventDefault(); idx=Math.min(idx+1,options.length-1); render(options); } else if (e.key==='ArrowUp'){ e.preventDefault(); idx=Math.max(idx-1,0); render(options); } else if (e.key==='Enter'){ e.preventDefault(); choose(idx>=0?idx:0); } else if (e.key==='Escape'){ e.preventDefault(); close(); } });
+  }
+
+  /* date helpers */
+  const clamp = (val,min,max)=>{ const n=parseInt(val,10); if(Number.isNaN(n)) return ""; return String(Math.max(min,Math.min(max,n))); };
+  const daysInMonth = (y,m)=> new Date(y, m, 0).getDate();
+  const safeInt = v => { const n=parseInt(v,10); return Number.isFinite(n)?n:null; };
+  const year20 = yy => { const d=String(yy||'').replace(/\D/g,''); if(!d) return null; return 2000 + parseInt(d.padStart(2,'0'),10); };
+
+  function isoFromParts(d,m,y){ if(!d||!m||!y) return null; const dt=new Date(y,m-1,d); if(dt.getFullYear()!==y || (dt.getMonth()+1)!==m || dt.getDate()!==d) return null; return dt.toISOString().slice(0,10); }
+
+  function diffDays(aIso,bIso){ const [ay,am,ad]=aIso.split('-').map(Number); const [by,bm,bd]=bIso.split('-').map(Number); const a=Date.UTC(ay,am-1,ad), b=Date.UTC(by,bm-1,bd); return Math.floor((b-a)/86400000); }
+
+  function humanYMD(fromIso,toIso){
+    const f=new Date(fromIso+"T00:00:00"); const t=new Date(toIso+"T00:00:00");
+    let years=t.getFullYear()-f.getFullYear(); let months=t.getMonth()-f.getMonth(); let days=t.getDate()-f.getDate();
+    if(days<0){ const prevMonthDays=new Date(t.getFullYear(),t.getMonth(),0).getDate(); days+=prevMonthDays; months-=1; }
+    if(months<0){ months+=12; years-=1; }
+    return {years,months,days};
+  }
+
+  function monthsBetween(fromIso,toIso){ const f=new Date(fromIso+"T00:00:00"); const t=new Date(toIso+"T00:00:00"); let months=(t.getFullYear()-f.getFullYear())*12 + (t.getMonth()-f.getMonth()); if (t.getDate()<f.getDate()) months -= 1; return Math.max(0, months); }
+
+  function categoryFromMonths(m){ if (m<=17) return "Infant"; if (m<=30) return "Toddler"; if (m<=43) return "Preschool"; if (m<=55) return "JK"; if (m<=71) return "SK"; return "Aged Out (6+)"; }
+  function categoryRangeLabel(cat){ switch (cat) { case "Infant": return "0 to 17 months"; case "Toddler": return "18 to 30 months"; case "Preschool": return "31 to 43 months"; case "JK": return "44 to 55 months"; case "SK": return "56 to 71 months"; default: return "72 months and older"; } }
+
+  function schoolYearsOntario(dobY){ return { jk: dobY + 4, sk: dobY + 5, g1: dobY + 6 }; }
+
+  function monthNumFromFieldset(fs){ const el=$('input[id$="month"]',fs); const n=safeInt(el?.dataset.monthNum); if(n) return n; const p=parseMonthFlexible(el?.value); return p.ok?p.num:null; }
+
+  function clampDay(fs){ const dayEl=$('input[id$="day"]',fs); const yyEl=$('input[id$="year-yy"]',fs); const m=monthNumFromFieldset(fs); const y=year20(yyEl?.value)||2000; if(!dayEl) return; const d=safeInt(dayEl.value); if(!d) return; if(m){ const max=daysInMonth(y,m); dayEl.value=clamp(d,1,max); } else { dayEl.value=clamp(d,1,31); } }
+
+  /* parse forms */
+  function parseDOB(){ const fs=$('#dob-fieldset'); const d=safeInt($('#dob-day').value); const m=monthNumFromFieldset(fs); const y=year20($('#dob-year-yy').value); return {d,m,y,iso:isoFromParts(d,m,y)}; }
+
+  function parseAsOf(){
+    const drawer=$('#asof-drawer'); const t=new Date();
+    if(!drawer.open){ const iso=new Date(t.getFullYear(),t.getMonth(),t.getDate()).toISOString().slice(0,10); return {d:t.getDate(), m:t.getMonth()+1, y:t.getFullYear(), iso, label:'Today'}; }
+    const fs=$('#asof-fieldset'); const d=safeInt($('#asof-day').value); const m=monthNumFromFieldset(fs); const y=year20($('#asof-year-yy').value);
+    if (d==null || m==null || !y){ const iso=new Date(t.getFullYear(),t.getMonth(),t.getDate()).toISOString().slice(0,10); return {d:t.getDate(), m:t.getMonth()+1, y:t.getFullYear(), iso, label:'Today'}; }
+    const iso=isoFromParts(d,m,y); const label = iso ? fmtFull(y,m,d) : 'Today'; return {d,m,y,iso,label};
+  }
+
+  /* JK eligibility banner */
+  function updateJKBanner(dob, toIso){
+    const [ay, am] = toIso.split('-').map(Number); // as-of year & month
+    const sy = schoolYearsOntario(dob.y);
+    const banner = document.getElementById('jk-banner');
+    const content = document.getElementById('jk-banner-content');
+    if (!banner || !content || !sy || !sy.jk) return;
+
+    // Reset banner state
+    banner.classList.remove('this','next','show');
+
+    // Show "Next Year" banner
+    if (ay === sy.jk - 1){
+      content.innerHTML = `Heads up! Eligible for JK <strong>next September ${sy.jk}</strong>.`;
+      banner.classList.add('next','show');
+      return;
+    }
+
+    // Show "This Year" banner
+    if (ay === sy.jk && am <= 9){
+      content.innerHTML = `Heads up! Eligible for JK <strong>this September ${sy.jk}</strong>.`;
+      banner.classList.add('this','show');
+      return;
+    }
+  }
+
+  /* UI feedback */
+  function setAlert(msg){ const box=$('#alert'); if(!msg){box.style.display='none';box.textContent='';return;} box.style.display='block'; box.textContent=msg; }
+  function setAsOfChip(label){ $('#asof-chip').textContent = label || 'Today'; }
+
+  function updateResults(fromIso,toIso,dob, asofLabel){
+    const days=diffDays(fromIso,toIso);
+    if (days<0){ setAlert("“As of” date must be on or after date of birth."); return; }
+    setAlert("");
+    const ymd=humanYMD(fromIso,toIso);
+    const monthsTotal=monthsBetween(fromIso,toIso);
+    const cat=categoryFromMonths(monthsTotal);
+
+    const yrs = ymd.years; const mos = ymd.months;
+    $('#age-ym').textContent = `${yrs} year${yrs!==1?'s':''}, ${mos} month${mos!==1?'s':''}`;
+    const monthLabel = monthsTotal===1 ? 'Month' : 'Months';
+    $('#age-total-months').textContent = `(${monthsTotal} ${monthLabel} total)`;
+
+    $('#age-cat').textContent = cat;
+    $('#age-cat-why').textContent = `(${categoryRangeLabel(cat)})`;
+
+    const sy=schoolYearsOntario(dob.y);
+    $('#school-jk').textContent = `JK Eligible: Sept ${sy.jk}`;
+    $('#school-rest').textContent = `SK: Sept ${sy.sk} • Grade 1: Sept ${sy.g1}`;
+
+    updateJKBanner(dob, toIso);
+    setAsOfChip(asofLabel || 'Today');
+  }
+
+  /* wire up */
+  function attachNumericBehaviors(scope){
+    $$('input[type="text"]', scope).forEach(el=>{
+      if (!el.closest('.month-input-wrapper')) { // Don't attach to month inputs, they have custom handlers
+        el.addEventListener('focus', ()=>el.select(), {passive:true});
+        el.addEventListener('blur', ()=>{ if (/day/.test(el.id)) clampDay(el.closest('fieldset')); else if (/year-yy/.test(el.id)) clampDay(el.closest('fieldset')); }, {passive:true});
+      }
+    });
+  }
+
+  attachNumericBehaviors(document);
+  attachMonthCombo($('#dob-month'),  $('#dob-suggest'));
+  attachMonthCombo($('#asof-month'), $('#asof-suggest'));
+
+  // re-clamp when month/year change
+  $('#dob-month').addEventListener('blur', ()=>clampDay($('#dob-fieldset')));
+  $('#dob-year-yy').addEventListener('blur', ()=>clampDay($('#dob-fieldset')));
+  $('#asof-month').addEventListener('blur', ()=>clampDay($('#asof-fieldset')));
+  $('#asof-year-yy').addEventListener('blur', ()=>clampDay($('#asof-fieldset')));
+
+  // drawer chip updates
+  $('#asof-drawer').addEventListener('toggle', ()=>{ const a=parseAsOf(); setAsOfChip(a.label); });
+  ['asof-day','asof-month','asof-year-yy'].forEach(id=>{ const el=document.getElementById(id); el.addEventListener('blur', ()=>{ const a=parseAsOf(); setAsOfChip(a.label); }); });
+
+  // JK banner close
+  const bClose = document.querySelector('#jk-banner .close');
+  if (bClose) bClose.addEventListener('click', ()=>{ const b = document.getElementById('jk-banner'); b.classList.remove('show'); });
+
+  // clear
+  $('#clear').addEventListener('click', ()=>{
+    ['dob-day','dob-month','dob-year-yy','asof-day','asof-month','asof-year-yy'].forEach(id=>{ const el=$('#'+id); if(!el) return; el.value=''; el.dataset.monthNum=''; });
+    $$('.confirmed-month-badge').forEach(b => b.classList.remove('visible'));
+    setAlert('');
+    ['age-ym','age-total-months','age-cat','age-cat-why','school-jk','school-rest'].forEach(id=>$('#'+id).textContent='—');
+    $('#asof-drawer').open=false; setAsOfChip('Today'); $('#dob-day').focus();
+    // hide banner on clear
+    const b = document.getElementById('jk-banner'); if (b){ b.classList.remove('show', 'this', 'next'); }
+  });
+
+  // calculate
+  function calculate(){
+    const dm=parseMonthFlexible($('#dob-month').value);
+    if (!dm.ok && !dm.ambiguous){ setAlert('Please enter a valid Date of Birth month (e.g., 1, Jan, September).'); return; }
+    if (dm.ambiguous){ setAlert(`DOB month is ambiguous. Options: ${dm.options.map(o=>o.name).join(' / ')}.`); return; }
+
+    const dob=parseDOB(); if(!dob.iso){ setAlert("Please enter a valid Date of Birth (DD / Month / 20YY)."); return; }
+
+    const asof=parseAsOf();
+    updateResults(dob.iso, asof.iso, dob, asof.label);
+  }
+
+  $('#calc').addEventListener('click', calculate);
+  document.addEventListener('keydown', e=>{ if (e.key==='Enter' && document.activeElement?.closest('.card')){ e.preventDefault(); calculate(); } });
+
+  /*
+   * Lightweight test cases (run with ?test=1 in the URL)
+   * These log to the console and do not affect the UI.
+   */
+  function runTests(){
+    const assert = (name, cond) => console[cond? 'log':'error'](`${cond?'✅':'❌'} ${name}`);
+
+    // monthsBetween & humanYMD sanity
+    assert('monthsBetween 2023-01-15 -> 2025-02-14 == 24', monthsBetween('2023-01-15','2025-02-14') === 24);
+    assert('monthsBetween 2023-01-15 -> 2025-02-15 == 25', monthsBetween('2023-01-15','2025-02-15') === 25);
+
+    // Category edges
+    assert('17 -> Infant', categoryFromMonths(17)==='Infant');
+    assert('18 -> Toddler', categoryFromMonths(18)==='Toddler');
+    assert('30 -> Toddler', categoryFromMonths(30)==='Toddler');
+    assert('31 -> Preschool', categoryFromMonths(31)==='Preschool');
+    assert('55 -> JK', categoryFromMonths(55)==='JK');
+    assert('71 -> SK', categoryFromMonths(71)==='SK');
+    assert('72 -> Aged Out', categoryFromMonths(72).startsWith('Aged Out'));
+
+    // School year mapping
+    const sy = schoolYearsOntario(2021); // JK: 2025
+    assert('JK year from 2021 DOB is 2025', sy.jk===2025);
+
+    // JK banner logic
+    const d = {y:2021};
+    // Next year banner: as-of 2024 any month
+    updateJKBanner(d, '2024-06-01');
+    assert('Banner visible for next year (2024)', document.getElementById('jk-banner').classList.contains('show'));
+    // This year (before Sept)
+    updateJKBanner(d, '2025-05-15');
+    assert('Banner visible for this year pre-Sept (2025-05)', document.getElementById('jk-banner').classList.contains('show'));
+    // This month (September)
+    updateJKBanner(d, '2025-09-02');
+    assert('Banner visible for this month September', document.getElementById('jk-banner').classList.contains('show'));
+    // After September -> hidden
+    updateJKBanner(d, '2025-10-01');
+    assert('Banner hidden after September', !document.getElementById('jk-banner').classList.contains('show'));
+
+    // Label test for JK Eligible
+    const dob2 = {d:1,m:2,y:2021,iso:'2021-02-01'};
+    updateResults('2021-02-01','2025-06-01', dob2, 'June 1, 2025');
+    assert('School JK label uses "JK Eligible:"', document.getElementById('school-jk').textContent.startsWith('JK Eligible:'));
+
+    console.log('Tests complete.');
+  }
+
+  if (location.search.includes('test=1')){
+    // Defer so DOM elements exist for banner assertions
+    setTimeout(runTests, 0);
+  }
+})();
+</script>
 </body>
 </html>
