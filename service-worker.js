@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ecvc-calc-v1';
+const CACHE_NAME = 'ecvc-calc-v2';
 const urlsToCache = [
   './',
   './index.html',

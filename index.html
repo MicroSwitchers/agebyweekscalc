@@ -54,6 +54,7 @@
     --accent-2: #2dd4bf;    /* Teal */
     --accent-3: #fb923c;    /* Orange */
     --accent-alert: #f472b6; /* Pink */
+    --accent-6: #38bdf8;    /* Sky Blue */
     --accent-age: var(--accent);
     --accent-cat: var(--accent-2);
     --accent-school: var(--accent-3);
@@ -118,11 +119,12 @@
   legend{ padding:0 var(--s2); color:var(--muted); font-size:12px; letter-spacing:.06em; text-transform:uppercase; font-weight: 700; }
 
   .fields{
-    display:grid; gap:var(--s4);
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    align-items:end; margin-top:var(--s2)
+    display:flex; flex-wrap:wrap; gap:var(--s4);
+    align-items:flex-end; margin-top:var(--s2)
   }
-  .pair{display:flex; flex-direction:column; gap:6px}
+  .pair{display:flex; flex-direction:column; gap:6px; flex:1 1 min(100%, 140px);}
+  .pair.combo{flex:2 1 min(100%, 200px);}
+
   label{font-size:12px; color:var(--muted); letter-spacing:.02em; font-weight: 700;}
 
   input[type="text"]{
@@ -135,6 +137,18 @@
   input[type="text"]::placeholder{color:var(--muted-2)}
   input[type="text"]:focus{border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent)}
   input[type="text"]:active{transform:translateY(1px)}
+
+  textarea{
+    width:100%; background:var(--ink); color:var(--text);
+    border:1px solid var(--border); border-radius:var(--r2);
+    padding:var(--s3) var(--s4); font-size:16px; outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.1);
+    font-family:inherit; resize:vertical; line-height:1.5;
+  }
+  textarea:focus{border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent)}
+  textarea:hover{border-color:color-mix(in oklab, var(--accent) 40%, var(--border))}
+
   .help{font-size:12px; color:var(--muted); margin-top:var(--s2)}
 
   /* 20 + YY year */
@@ -163,18 +177,19 @@
   .btn.secondary:hover{ background-color: var(--ink); }
 
   /* result tiles */
-  .result{ display:grid; gap:var(--s4); margin-top:var(--s6); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) }
+  .result{ display:grid; gap:var(--s4); margin-top:var(--s6); grid-template-columns: 1fr }
+  @media(min-width:720px){ .result{grid-template-columns: 1fr 1fr} }
   .tile{ position:relative; overflow:hidden; border:1px solid var(--border); border-radius:var(--r3); padding:var(--s5) }
   .tile::before{ content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); opacity:.95 }
-  .tile .row{display:flex; align-items:center; gap:12px}
+  .tile .row{display:flex; align-items:center; gap:12px; height: 100%;}
   .ico{ flex:0 0 36px; width:36px; aspect-ratio:1 / 1; height:auto; border-radius:10px; display:grid; place-items:center; background:var(--panel); border:1px solid var(--border) }
-  .big{font-size:clamp(24px,3.8vw,38px); font-weight:900; letter-spacing:.2px}
-  .muted{color:var(--muted); font-weight: 700;}
+  .big{font-size:clamp(20px,3.5vw,34px); font-weight:900; letter-spacing:.2px; line-height:1.2}
+  .muted{color:var(--muted); font-weight: 700; line-height:1.2}
   .metric{margin-top:6px}
   /* Align icons to top of the first line of text */
   .tile .row{align-items:flex-start}
   .tile .row .ico{align-self:flex-start}
-  .age-sub{margin-top:2px; font-size:17px; color:var(--muted)}
+  .age-sub{margin-top:4px; font-size:16px; color:var(--muted); line-height:1.3}
   /* Smaller range note for Age Category */
   #age-cat-why{font-size:17px; opacity:.95}
 
@@ -189,15 +204,19 @@
   .tile.is-age{ background: color-mix(in srgb, var(--accent-age) 5%, var(--panel-2)); }
   .tile.is-cat{ background: color-mix(in srgb, var(--accent-cat) 5%, var(--panel-2)); }
   .tile.is-school{ background: color-mix(in srgb, var(--accent-school) 5%, var(--panel-2)); }
+  .tile.is-sixth{ background: color-mix(in srgb, var(--accent-6) 5%, var(--panel-2)); }
   .tile.is-age::before{background:linear-gradient(90deg, var(--accent-age), color-mix(in oklab, var(--accent-age) 70%, white));}
   .tile.is-cat::before{background:linear-gradient(90deg, var(--accent-cat), color-mix(in oklab, var(--accent-cat) 70%, white));}
   .tile.is-school::before{background:linear-gradient(90deg, var(--accent-school), color-mix(in oklab, var(--accent-school) 70%, white));}
+  .tile.is-sixth::before{background:linear-gradient(90deg, var(--accent-6), color-mix(in oklab, var(--accent-6) 70%, white));}
   .tile.is-age .big{color:var(--accent-age)}
   .tile.is-cat .big{color:var(--accent-cat)}
   .tile.is-school .jk-emph{color:var(--accent-school)}
+  .tile.is-sixth .big{color:var(--accent-6)}
   .tile.is-age .ico{color:var(--accent-age); border-color:color-mix(in oklab, var(--accent-age) 45%, var(--border)); background:linear-gradient(180deg, color-mix(in oklab, var(--accent-age) 10%, transparent), rgba(0,0,0,.06));}
   .tile.is-cat .ico{color:var(--accent-cat); border-color:color-mix(in oklab, var(--accent-cat) 45%, var(--border)); background:linear-gradient(180deg, color-mix(in oklab, var(--accent-cat) 10%, transparent), rgba(0,0,0,.06));}
   .tile.is-school .ico{color:var(--accent-school); border-color:color-mix(in oklab, var(--accent-school) 45%, var(--border)); background:linear-gradient(180deg, color-mix(in oklab, var(--accent-school) 10%, transparent), rgba(0,0,0,.06));}
+  .tile.is-sixth .ico{color:var(--accent-6); border-color:color-mix(in oklab, var(--accent-6) 45%, var(--border)); background:linear-gradient(180deg, color-mix(in oklab, var(--accent-6) 10%, transparent), rgba(0,0,0,.06));}
 
   /* Rollover animations */
   .tile{transition:transform .16s ease, box-shadow .2s ease, border-color .2s ease}
@@ -331,9 +350,10 @@
   @media (max-width: 900px){ .wrap{padding:var(--s6) var(--s4)} .card{padding:var(--s5)} }
   @media (max-width: 720px){
     header{margin-bottom:var(--s5)}
-    .fields{grid-template-columns:repeat(2, minmax(0, 1fr))}
+    .fields{flex-direction:row} 
     input[type="text"], .yearprefix{height:48px}
-    .yearyy{width:100%; max-width:120px}
+    .yearyy{width:100%; max-width:none;}
+    .yeargroup{width:100%}
     .actions{gap:var(--s2)}
     .btn{flex:1 1 100%}
     .result{grid-template-columns:1fr; gap:var(--s3)}
@@ -346,8 +366,8 @@
     .wrap{padding:var(--s5) var(--s3)}
     .brand{gap:var(--s3)}
     .logo{width:36px; height:36px; border-radius:10px}
-    .fields{grid-template-columns:1fr}
-    .yearyy{max-width:96px}
+    .fields{flex-direction:column}
+    .pair{width:100%; flex:none}
     .titles h1{font-size:clamp(20px,8vw,28px)}
   }
 </style>
@@ -370,13 +390,6 @@
       <fieldset id="dob-fieldset">
         <legend>Date of Birth</legend>
         <div class="fields">
-          <div class="pair">
-            <label for="dob-day">Day</label>
-            <input id="dob-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
-                   placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
-                   name="calc_birth_day_field" data-lpignore="true" data-form-type="other">
-          </div>
-
           <div class="pair combo">
             <label for="dob-month">Month (name or number)</label>
             <div class="month-input-wrapper">
@@ -387,6 +400,13 @@
               <span class="badge confirmed-month-badge" aria-hidden="true"></span>
             </div>
             <div id="dob-suggest" class="suggest" role="listbox" aria-hidden="true"></div>
+          </div>
+
+          <div class="pair">
+            <label for="dob-day">Day</label>
+            <input id="dob-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
+                   placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                   name="calc_birth_day_field" data-lpignore="true" data-form-type="other">
           </div>
 
           <div class="pair">
@@ -414,12 +434,6 @@
             <fieldset id="asof-fieldset" aria-describedby="asof-hint">
               <legend>As of</legend>
               <div class="fields">
-                <div class="pair">
-                  <label for="asof-day">Day</label>
-                  <input id="asof-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
-                         placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
-                         name="calc_asof_day_field" data-lpignore="true" data-form-type="other">
-                </div>
                 <div class="pair combo">
                   <label for="asof-month">Month (name or number)</label>
                   <div class="month-input-wrapper">
@@ -430,6 +444,12 @@
                     <span class="badge confirmed-month-badge" aria-hidden="true"></span>
                   </div>
                   <div id="asof-suggest" class="suggest" role="listbox" aria-hidden="true"></div>
+                </div>
+                <div class="pair">
+                  <label for="asof-day">Day</label>
+                  <input id="asof-day" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2"
+                         placeholder="DD" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                         name="calc_asof_day_field" data-lpignore="true" data-form-type="other">
                 </div>
                 <div class="pair">
                   <label for="asof-year-yy">Year</label>
@@ -527,6 +547,35 @@
           </div>
         </div>
       </div>
+
+      <div class="tile is-sixth">
+        <div class="row">
+          <div class="ico" aria-hidden="true">
+            <!-- hourglass / countdown icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 2h14" stroke="currentColor" opacity=".7"/>
+              <path d="M5 22h14" stroke="currentColor" opacity=".7"/>
+              <path d="M5 2c0 6 7 8 7 10S5 16 5 22" stroke="currentColor" opacity=".7"/>
+              <path d="M19 2c0 6-7 8-7 10s7 4 7 10" stroke="currentColor" opacity=".7"/>
+            </svg>
+          </div>
+          <div>
+            <div class="muted" id="sixth-bday-label">Turns 6 Years Old</div>
+            <div class="big metric" id="sixth-bday-date">—</div>
+            <div class="age-sub" id="sixth-bday-countdown">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Box -->
+    <div id="summary-container" style="display:none; margin-top:var(--s6)">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:var(--s2)">
+        <label for="summary-text" style="margin:0;">Results Summary</label>
+        <button id="copy-btn" type="button" class="btn secondary" style="height:36px; padding:0 16px; font-size:13px; font-weight:700;">Copy</button>
+      </div>
+      <textarea id="summary-text" rows="3" aria-label="Results Summary"></textarea>
+      <div id="copy-toast" style="color:var(--accent-2); font-size:13px; font-weight:700; margin-top:6px; opacity:0; transition:opacity 0.2s; text-align:right;" aria-live="polite">Copied!</div>
     </div>
 
     <!-- Info drawer -->
@@ -769,6 +818,46 @@ if ('serviceWorker' in navigator) {
     $('#school-jk').textContent = `JK Eligible: Sept ${sy.jk}`;
     $('#school-rest').textContent = `SK: Sept ${sy.sk} • Grade 1: Sept ${sy.g1}`;
 
+    // 6th birthday panel
+    const sixthY = dob.y + 6;
+    // Handle Feb 29 leap-year edge case: fall back to Mar 1
+    let sixthIso = isoFromParts(dob.d, dob.m, sixthY);
+    if (!sixthIso) sixthIso = isoFromParts(1, 3, sixthY); // Mar 1 fallback
+    const sixthDate = new Date(sixthIso + 'T00:00:00');
+    const sixthLabel = sixthDate.toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'});
+    $('#sixth-bday-date').textContent = sixthLabel;
+    let isPast6 = false;
+    if (toIso < sixthIso) {
+      const cd = humanYMD(toIso, sixthIso);
+      const parts = [];
+      if (cd.years)  parts.push(`${cd.years} year${cd.years!==1?'s':''}`);
+      if (cd.months) parts.push(`${cd.months} month${cd.months!==1?'s':''}`);
+      if (!parts.length) parts.push(`${cd.days} day${cd.days!==1?'s':''}`);
+      $('#sixth-bday-countdown').textContent = `In ${parts.join(', ')}`;
+    } else {
+      isPast6 = true;
+      const pd = humanYMD(sixthIso, toIso);
+      const parts = [];
+      if (pd.years)  parts.push(`${pd.years} year${pd.years!==1?'s':''}`);
+      if (pd.months) parts.push(`${pd.months} month${pd.months!==1?'s':''}`);
+      if (!parts.length) parts.push(`${pd.days} day${pd.days!==1?'s':''}`);
+      $('#sixth-bday-countdown').textContent = `${parts.join(', ')} ago`;
+    }
+    
+    $('#sixth-bday-label').textContent = isPast6 ? 'Turned 6 Years Old' : 'Turns 6 Years Old';
+
+    // Generate output text
+    const dobStr = fmtFull(dob.y, dob.m, dob.d);
+    let summary = `DOB: ${dobStr}`;
+    if (asofLabel !== 'Today') summary += ` | As of: ${asofLabel}`;
+    summary += `\nAge: ${yrs} year${yrs!==1?'s':''}, ${mos} month${mos!==1?'s':''}`;
+    summary += ` | Category: ${cat}`;
+    summary += ` | JK Eligible: Sept ${sy.jk}`;
+    summary += ` | ${isPast6 ? 'Turned' : 'Turns'} 6: ${sixthLabel}`;
+
+    $('#summary-text').value = summary;
+    $('#summary-container').style.display = 'block';
+
     updateJKBanner(dob, toIso);
     setAsOfChip(asofLabel || 'Today');
   }
@@ -806,10 +895,26 @@ if ('serviceWorker' in navigator) {
     ['dob-day','dob-month','dob-year-yy','asof-day','asof-month','asof-year-yy'].forEach(id=>{ const el=$('#'+id); if(!el) return; el.value=''; el.dataset.monthNum=''; });
     $$('.confirmed-month-badge').forEach(b => b.classList.remove('visible'));
     setAlert('');
-    ['age-ym','age-total-months','age-cat','age-cat-why','school-jk','school-rest'].forEach(id=>$('#'+id).textContent='—');
+    ['age-ym','age-total-months','age-cat','age-cat-why','school-jk','school-rest','sixth-bday-date','sixth-bday-countdown'].forEach(id=>$('#'+id).textContent='—');
+    $('#sixth-bday-label').textContent = 'Turns 6 Years Old';
     $('#asof-drawer').open=false; setAsOfChip('Today'); $('#dob-day').focus();
-    // hide banner on clear
+    // hide banners / summary
     const b = document.getElementById('jk-banner'); if (b){ b.classList.remove('show', 'this', 'next'); }
+    $('#summary-container').style.display = 'none';
+    $('#summary-text').value = '';
+  });
+
+  // copy summary
+  $('#copy-btn').addEventListener('click', async ()=>{
+    const text = $('#summary-text').value;
+    try {
+      await navigator.clipboard.writeText(text);
+      const toast = $('#copy-toast');
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    } catch(err) {
+      console.error('Failed to copy', err);
+    }
   });
 
   // calculate
